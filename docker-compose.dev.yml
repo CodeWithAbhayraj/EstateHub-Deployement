@@ -1,0 +1,55 @@
+services:
+
+  backend:
+    build:
+      context: ./EstateHub-Backend/EstateHub/EstateHub
+      dockerfile: Dockerfile.dev
+
+    container_name: estatehub-backend-dev
+
+    ports:
+      - "8081:8080"
+
+    volumes:
+      - ./EstateHub-Backend/EstateHub/EstateHub:/app
+      - gradle_cache:/home/gradle/.gradle
+
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+      JWT_SECRET: EstateHubSecretKeyForJwtAuthentication2026Secure
+      JWT_EXPIRATION: 86400000
+
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+
+    restart: unless-stopped
+
+
+  frontend:
+    build:
+      context: ./EstateHub-Frontend/EstateHub-Frontend
+      dockerfile: Dockerfile.dev
+
+    container_name: estatehub-frontend-dev
+
+    ports:
+      - "5173:5173"
+
+    volumes:
+      - ./EstateHub-Frontend/EstateHub-Frontend:/app
+      - /app/node_modules
+
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+
+    depends_on:
+      - backend
+
+    restart: unless-stopped
+
+
+volumes:
+  gradle_cache:

@@ -1,0 +1,11 @@
+FROM gradle:8.14-jdk21
+
+WORKDIR /app
+
+COPY . .
+
+RUN chmod +x gradlew
+
+EXPOSE 8080
+
+CMD ["./gradlew", "bootRun", "--no-daemon"]
