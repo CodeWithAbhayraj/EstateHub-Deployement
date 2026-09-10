@@ -34,12 +34,11 @@ jobs:
         working-directory: EstateHub-Backend/EstateHub/EstateHub
 
     env:
-    SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/estatehub_db?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true
-    SPRING_DATASOURCE_USERNAME: root
-    SPRING_DATASOURCE_PASSWORD: root
-
-    JWT_SECRET: EstateHubSecretKeyForJwtAuthentication2026Secure
-    JWT_EXPIRATION: 86400000
+      SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/estatehub_db?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      JWT_SECRET: EstateHubSecretKeyForJwtAuthentication2026Secure
+      JWT_EXPIRATION: 86400000
 
     steps:
 
