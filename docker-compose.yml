@@ -1,0 +1,64 @@
+services:
+
+  # =========================
+  # MySQL Database
+  # =========================
+  mysql:
+    image: mysql:8.0
+    container_name: estatehub-mysql
+
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    restart: unless-stopped
+
+
+  # =========================
+  # Spring Boot Backend
+  # =========================
+  backend:
+    image: dockerabhayraj/estatehub-backend:latest
+    container_name: estatehub-backend
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+
+    depends_on:
+      - mysql
+
+    restart: unless-stopped
+
+
+  # =========================
+  # React Frontend + Nginx
+  # =========================
+  frontend:
+    image: dockerabhayraj/estatehub-frontend:latest
+    container_name: estatehub-frontend
+
+    ports:
+      - "80:80"
+
+    depends_on:
+      - backend
+
+    restart: unless-stopped
+
+
+# =========================
+# Persistent MySQL Storage
+# =========================
+volumes:
+  mysql_data:
