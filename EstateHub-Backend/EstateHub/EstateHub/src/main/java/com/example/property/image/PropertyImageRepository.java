@@ -1,39 +1,13 @@
 package com.example.property.image;
 
-import com.example.property.Property;
-import jakarta.persistence.*;
-import lombok.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
-@Entity
-@Table(name = "property_images")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class PropertyImage {
+public interface PropertyImageRepository extends JpaRepository<PropertyImage, Long> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    List<PropertyImage> findByPropertyId(Long propertyId);
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "property_id", nullable = false)
-    private Property property;
-
-    @Column(nullable = false, length = 1000)
-    private String imageUrl;
-
-    @Column(nullable = false, length = 500)
-    private String publicId;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    Optional<PropertyImage> findByIdAndPropertyId(Long imageId, Long propertyId);
 }
