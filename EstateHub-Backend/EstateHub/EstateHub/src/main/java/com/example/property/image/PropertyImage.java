@@ -1,5 +1,6 @@
-package com.example.property;
+package com.example.property.image;
 
+import com.example.property.Property;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,20 +19,16 @@ public class PropertyImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Property ke saath relationship
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
-    // Cloudinary image URL
     @Column(nullable = false, length = 1000)
     private String imageUrl;
 
-    // Cloudinary public ID
     @Column(nullable = false, length = 500)
     private String publicId;
 
-    // Image upload time
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

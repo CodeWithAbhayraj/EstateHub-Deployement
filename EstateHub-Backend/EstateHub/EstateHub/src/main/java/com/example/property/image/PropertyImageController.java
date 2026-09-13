@@ -1,8 +1,5 @@
 package com.example.property.image;
 
-import com.example.property.PropertyImage;
-import com.example.property.PropertyImageService;
-import com.example.property.image.dto.PropertyImageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +18,7 @@ public class PropertyImageController {
     private final PropertyImageService propertyImageService;
 
     // ==========================================
-    // UPLOAD PROPERTY IMAGE
+    // UPLOAD IMAGE
     // ==========================================
 
     @PostMapping(
@@ -59,7 +56,7 @@ public class PropertyImageController {
     }
 
     // ==========================================
-    // GET PROPERTY IMAGES
+    // GET IMAGES
     // ==========================================
 
     @GetMapping("/{propertyId}/images")
@@ -97,7 +94,7 @@ public class PropertyImageController {
     }
 
     // ==========================================
-    // DELETE PROPERTY IMAGE
+    // DELETE IMAGE
     // ==========================================
 
     @DeleteMapping("/{propertyId}/images/{imageId}")
