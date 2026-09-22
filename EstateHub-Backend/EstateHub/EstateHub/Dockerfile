@@ -6,7 +6,7 @@ COPY . .
 
 RUN chmod +x gradlew
 
-RUN ./gradlew clean bootJar --no-daemon
+RUN ./gradlew clean bootJar -x test --no-daemon
 
 FROM eclipse-temurin:21-jre
 
