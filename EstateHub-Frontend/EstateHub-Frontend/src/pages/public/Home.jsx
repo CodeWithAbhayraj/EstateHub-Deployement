@@ -1,118 +1,296 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Building2, CheckCircle, MapPin, Search, ShieldCheck, Users } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  CheckCircle2,
+  Compass,
+  KeyRound,
+  MapPin,
+  Ruler,
+  Search,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
+
+/*
+  Optional: for the closest match to the design intent, add Fraunces as the
+  display serif. In public/index.html <head>:
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+
+  Everything below falls back gracefully to Tailwind's default serif stack
+  (Georgia etc.) if you skip this, so it still looks correct without it.
+*/
+
+const FRASER = { fontFamily: "'Fraunces', Georgia, 'Times New Roman', serif" };
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Hero */}
-      <section className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16 lg:py-20">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
-            {/* Left */}
+    <div className="min-h-screen bg-[#F2ECDF] text-[#201C15]">
+      {/* ================= HERO ================= */}
+      <section className="relative overflow-hidden bg-[#171B21]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+          }}
+        />
+
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+          {/* title-block strip */}
+          <div className="mb-12 flex flex-wrap items-center gap-x-8 gap-y-2 border-b border-white/10 pb-4 text-xs text-white/40">
+            <span className="tracking-wide">EstateHub — Listing Index</span>
+            <span className="hidden sm:inline">Pune · Mumbai · Bengaluru</span>
+            <span className="ml-auto text-white/30">Updated daily</span>
+          </div>
+
+          <div className="grid items-center gap-14 lg:grid-cols-2">
+            {/* LEFT */}
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1.5 text-xs font-bold text-blue-700">
-                <Building2 size={14} /> Smarter Property Discovery
-              </div>
-              <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-                Find a place <span className="text-blue-600">you'll love</span> to call home.
+              <h1
+                className="max-w-xl text-4xl leading-[1.08] text-white sm:text-5xl lg:text-[3.4rem]"
+                style={FRASER}
+              >
+                Property listings,
+                <br />
+                drawn to scale.
               </h1>
-              <p className="mt-4 max-w-xl text-base text-slate-500 sm:text-lg">
-                Discover verified properties, connect with the right people, and manage your property journey from one simple platform.
+
+              <p className="mt-6 max-w-md text-base leading-7 text-white/60">
+                EstateHub indexes verified homes across the country — every
+                listing measured, checked, and ready to visit before it ever
+                reaches you.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link to="/properties" className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800">
-                  <Search size={16} /> Browse Properties <ArrowRight size={16} />
-                </Link>
-                <Link to="/register" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-                  Get Started
-                </Link>
-              </div>
-              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500">
-                <span className="flex items-center gap-1"><CheckCircle size={16} className="text-green-600" /> Verified listings</span>
-                <span className="flex items-center gap-1"><CheckCircle size={16} className="text-green-600" /> Easy property search</span>
-              </div>
-            </div>
-            {/* Right - simplified mock property card */}
-            <div className="relative rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-900 text-white">
-                    <Building2 size={18} />
+
+              {/* Search row */}
+              <div className="mt-10 border-b-2 border-[#AD8332]">
+                <div className="flex flex-col gap-4 pb-4 sm:flex-row sm:items-end">
+                  <div className="flex-1">
+                    <label className="flex items-center gap-2 text-xs text-white/40">
+                      <MapPin size={13} />
+                      Locality, city or pincode
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Search Shivajinagar, Pune…"
+                      className="mt-2 w-full bg-transparent text-lg text-white placeholder:text-white/30 focus:outline-none"
+                    />
                   </div>
-                  <p className="mt-3 text-xs font-bold uppercase text-slate-400">Featured Property</p>
-                  <h2 className="text-lg font-bold text-slate-900">Modern 2 BHK Apartment</h2>
-                </div>
-                <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-700">Available</span>
-              </div>
-              <div className="mt-3 flex items-center gap-2 text-sm text-slate-500">
-                <MapPin size={14} /> Shivajinagar, Pune
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <div className="rounded-lg bg-slate-50 p-2 text-center">
-                  <p className="text-xs text-slate-400">BHK</p>
-                  <p className="font-bold">2 BHK</p>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-2 text-center">
-                  <p className="text-xs text-slate-400">Area</p>
-                  <p className="font-bold">1200 sq.ft</p>
+
+                  <Link
+                    to="/properties"
+                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-none bg-[#AD8332] px-6 py-3 text-sm font-semibold text-[#171B21] transition hover:bg-[#c39843] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  >
+                    <Search size={16} />
+                    Search listings
+                  </Link>
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between rounded-lg bg-slate-50 p-3">
-                <div>
-                  <p className="text-xs text-slate-400">Starting from</p>
-                  <p className="text-xl font-bold text-slate-900">₹99,99,999</p>
+
+              <div className="mt-6 flex flex-wrap gap-x-7 gap-y-3">
+                <span className="flex items-center gap-2 text-sm text-white/50">
+                  <CheckCircle2 size={16} className="text-[#7FA88D]" />
+                  Every listing verified before publishing
+                </span>
+                <span className="flex items-center gap-2 text-sm text-white/50">
+                  <ShieldCheck size={16} className="text-[#7FA88D]" />
+                  Admin-reviewed, not self-listed
+                </span>
+              </div>
+            </div>
+
+            {/* RIGHT — blueprint listing card */}
+            <div className="relative mx-auto w-full max-w-md lg:ml-auto">
+              <CornerMarks />
+
+              <div className="border border-white/15 bg-[#1D2128]">
+                <div className="flex items-center justify-between border-b border-white/10 px-5 py-3 text-xs text-white/40">
+                  <span>Listing / 04B</span>
+                  <span>Scale 1:100</span>
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                  <ArrowRight size={16} />
+
+                <div className="relative h-56 overflow-hidden border-b border-white/10">
+                  <div
+                    className="absolute inset-0 opacity-20"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
+                      backgroundSize: "22px 22px",
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Building2 size={84} strokeWidth={0.75} className="text-white/25" />
+                  </div>
+
+                  <div className="absolute left-4 top-4 flex items-center gap-1.5 border border-[#AD8332]/60 bg-[#171B21]/80 px-2.5 py-1 text-[11px] text-[#D8B876]">
+                    <ShieldCheck size={12} />
+                    Verified
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <h2 className="text-xl text-white" style={FRASER}>
+                    Modern 2 BHK Apartment
+                  </h2>
+                  <p className="mt-1.5 flex items-center gap-1.5 text-sm text-white/45">
+                    <MapPin size={13} />
+                    Shivajinagar, Pune
+                  </p>
+
+                  <div className="mt-5 space-y-2.5">
+                    <DimensionRow label="Configuration" value="2 BHK" />
+                    <DimensionRow label="Carpet area" value="1,200 sq ft" />
+                    <DimensionRow label="Status" value="Ready to move" />
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-5">
+                    <div>
+                      <p className="text-[11px] text-white/40">Starting from</p>
+                      <p className="text-2xl text-white" style={FRASER}>
+                        ₹99.99 L
+                      </p>
+                    </div>
+
+                    <Link
+                      to="/properties"
+                      className="flex h-10 w-10 items-center justify-center border border-white/20 text-white transition hover:border-[#AD8332] hover:text-[#D8B876]"
+                      aria-label="View property"
+                    >
+                      <ArrowRight size={17} />
+                    </Link>
+                  </div>
                 </div>
               </div>
-              {/* Floating badges removed for simplicity */}
+            </div>
+          </div>
+
+          {/* Stats ledger */}
+          <div className="mt-16 grid grid-cols-2 border-t border-white/10 sm:grid-cols-4">
+            <Stat value="100+" label="Listings on the index" />
+            <Stat value="50+" label="Verified this quarter" />
+            <Stat value="500+" label="People who found a home" />
+            <Stat value="24/7" label="Platform availability" />
+          </div>
+        </div>
+      </section>
+
+      {/* ================= WHY ESTATEHUB ================= */}
+      <section className="bg-[#F2ECDF] py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,340px)_1fr]">
+            <div>
+              <h2 className="text-3xl leading-tight text-[#201C15]" style={FRASER}>
+                Built for how people
+                <br />
+                actually search for homes.
+              </h2>
+              <p className="mt-4 max-w-sm text-sm leading-6 text-[#6B6252]">
+                Fewer dead listings, fewer guesses. Everything on EstateHub is
+                checked before it reaches your search results.
+              </p>
+            </div>
+
+            <div className="divide-y divide-[#D8CFB9] border-t border-[#D8CFB9]">
+              <FeatureRow
+                icon={Search}
+                title="Search by what actually matters"
+                description="Filter by locality, property type, carpet area and budget — not marketing categories."
+              />
+              <FeatureRow
+                icon={ShieldCheck}
+                title="Verified before it's visible"
+                description="Every listing is reviewed by our team before it appears in search, so you're not filtering out noise yourself."
+              />
+              <FeatureRow
+                icon={Users}
+                title="One place to follow through"
+                description="Request a visit, message the platform and track your shortlist without switching tools."
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-12 bg-white border-y border-slate-200">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center max-w-2xl mx-auto">
-            <p className="text-sm font-bold uppercase text-blue-600">Why EstateHub</p>
-            <h2 className="mt-2 text-2xl font-bold text-slate-900">Everything you need in one place</h2>
-            <p className="mt-2 text-sm text-slate-500">A straightforward platform designed to make property discovery and management easier.</p>
-          </div>
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
-            {[
-              { icon: Search, title: "Easy Property Search", desc: "Search and filter properties by location, area, and property type." },
-              { icon: ShieldCheck, title: "Verified Listings", desc: "Properties go through an approval process before becoming publicly available." },
-              { icon: CalendarDaysIcon, title: "Simple Visit Booking", desc: "Connect with the platform and schedule property visits without unnecessary complexity." },
-            ].map((feat, i) => (
-              <div key={i} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
-                  <feat.icon size={18} />
-                </div>
-                <h3 className="mt-4 text-lg font-bold text-slate-900">{feat.title}</h3>
-                <p className="mt-2 text-sm text-slate-500">{feat.desc}</p>
-              </div>
-            ))}
+      {/* ================= HOW IT WORKS ================= */}
+      <section className="border-t border-[#D8CFB9] bg-[#EAE2CF] py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl text-[#201C15]" style={FRASER}>
+            Three steps, start to keys.
+          </h2>
+
+          <div className="relative mt-14">
+            <div className="absolute left-0 right-0 top-6 hidden h-px bg-[#C9BE9F] md:block" />
+
+            <div className="grid gap-10 md:grid-cols-3">
+              <PlanStep
+                index="1"
+                icon={Search}
+                title="Search"
+                description="Browse verified properties filtered to your locality and budget."
+              />
+              <PlanStep
+                index="2"
+                icon={Compass}
+                title="Explore"
+                description="Open the full listing — layout, area, price and status — before you commit to a visit."
+              />
+              <PlanStep
+                index="3"
+                icon={KeyRound}
+                title="Connect"
+                description="Reach out through EstateHub and schedule a visit for the property you've picked."
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-slate-900 py-12">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-bold uppercase text-slate-400">Start your journey</p>
-            <h2 className="text-2xl font-bold text-white">Ready to find your next property?</h2>
-            <p className="mt-1 text-sm text-slate-300">Explore available properties or create your account and get started with EstateHub.</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link to="/properties" className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-100">
-              Browse Properties <ArrowRight size={16} className="inline" />
-            </Link>
-            <Link to="/register" className="rounded-lg border border-slate-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
-              Create Account
-            </Link>
+      {/* ================= CTA ================= */}
+      <section className="relative overflow-hidden bg-[#171B21]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(173,131,50,1) 1px, transparent 1px), linear-gradient(90deg, rgba(173,131,50,1) 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+          }}
+        />
+
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-8 border-t border-white/10 pt-12 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-xl">
+              <p className="flex items-center gap-2 text-sm text-[#D8B876]">
+                <Ruler size={15} />
+                Ready when you are
+              </p>
+              <h2 className="mt-3 text-3xl leading-tight text-white sm:text-4xl" style={FRASER}>
+                Your next address is on the index.
+              </h2>
+              <p className="mt-3 text-white/55">
+                Explore verified properties or create an account to save
+                listings and pick up where you left off.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Link
+                to="/properties"
+                className="inline-flex items-center gap-2 bg-[#AD8332] px-6 py-3 text-sm font-semibold text-[#171B21] transition hover:bg-[#c39843]"
+              >
+                Explore properties
+                <ArrowRight size={16} />
+              </Link>
+
+              <Link
+                to="/register"
+                className="inline-flex items-center gap-2 border border-white/25 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Create account
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -120,18 +298,73 @@ export default function Home() {
   );
 }
 
-function CalendarDaysIcon() {
+/* ================= COMPONENTS ================= */
+
+function CornerMarks() {
+  const base = "absolute h-4 w-4 border-[#AD8332]/70";
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
-      <rect width="18" height="18" x="3" y="4" rx="2" />
-      <line x1="16" x2="16" y1="2" y2="6" />
-      <line x1="8" x2="8" y1="2" y2="6" />
-      <line x1="3" x2="21" y1="10" y2="10" />
-      <path d="M8 14h.01" />
-      <path d="M12 14h.01" />
-      <path d="M16 14h.01" />
-      <path d="M8 18h.01" />
-      <path d="M12 18h.01" />
-    </svg>
+    <>
+      <span className={`${base} -left-2 -top-2 border-l-2 border-t-2`} />
+      <span className={`${base} -right-2 -top-2 border-r-2 border-t-2`} />
+      <span className={`${base} -bottom-2 -left-2 border-b-2 border-l-2`} />
+      <span className={`${base} -bottom-2 -right-2 border-b-2 border-r-2`} />
+    </>
+  );
+}
+
+function DimensionRow({ label, value }) {
+  return (
+    <div className="flex items-center gap-3 text-sm">
+      <span className="shrink-0 text-white/40">{label}</span>
+      <span className="h-px flex-1 bg-white/10" />
+      <span className="shrink-0 font-medium text-white/85">{value}</span>
+    </div>
+  );
+}
+
+function Stat({ value, label }) {
+  return (
+    <div className="border-r border-white/10 px-1 py-6 last:border-r-0 sm:px-5">
+      <p className="text-2xl text-white sm:text-3xl" style={FRASER}>
+        {value}
+      </p>
+      <p className="mt-1 text-xs leading-snug text-white/40">{label}</p>
+    </div>
+  );
+}
+
+function FeatureRow({ icon: Icon, title, description }) {
+  return (
+    <div className="group grid gap-4 py-7 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-8">
+      <div className="flex h-11 w-11 items-center justify-center border border-[#C9BE9F] text-[#8C6924] transition group-hover:border-[#AD8332] group-hover:bg-[#AD8332] group-hover:text-white">
+        <Icon size={19} />
+      </div>
+
+      <div>
+        <h3 className="text-lg font-medium text-[#201C15]">{title}</h3>
+        <p className="mt-1.5 max-w-lg text-sm leading-6 text-[#6B6252]">
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function PlanStep({ index, icon: Icon, title, description }) {
+  return (
+    <div className="relative">
+      <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#171B21] bg-[#EAE2CF] text-sm font-medium text-[#171B21]">
+        {index}
+      </div>
+
+      <div className="mt-5 flex items-center gap-2 text-[#8C6924]">
+        <Icon size={17} />
+      </div>
+
+      <h3 className="mt-2 text-lg font-medium text-[#201C15]">{title}</h3>
+      <p className="mt-2 max-w-xs text-sm leading-6 text-[#6B6252]">
+        {description}
+      </p>
+    </div>
   );
 }
