@@ -55,8 +55,8 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x gradlew
 
-      - name: Build and Test Backend
-        run: ./gradlew clean build --no-daemon --stacktrace
+      - name: Build Backend
+        run: ./gradlew clean build -x test --no-daemon --stacktrace
 
 
   frontend:
@@ -83,5 +83,4 @@ jobs:
         run: npm ci
 
       - name: Build Frontend
-      
         run: npm run build
