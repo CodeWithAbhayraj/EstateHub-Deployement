@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -28,18 +29,9 @@ import PropertyGallery from "../../components/property/PropertyGallery";
 import LeadForm from "../../components/lead/LeadForm";
 import VisitForm from "../../components/visit/VisitForm";
 
-/*
-  Fonts: this design pairs a serif display face (for the title and price)
-  with a plain sans for everything else. Add these once, e.g. in index.html:
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  Then the `font-display` / `font-sans` classes below resolve to:
-  font-display -> ['Fraunces', 'serif']
-  font-sans    -> ['Inter', 'sans-serif']  (or leave as Tailwind's default sans)
-*/
+const FRASER = {
+  fontFamily: "'Fraunces', Georgia, 'Times New Roman', serif",
+};
 
 export default function PropertyDetails() {
   const { id } = useParams();
@@ -111,13 +103,26 @@ export default function PropertyDetails() {
     fetchProperty();
   }, [id, isBuyer]);
 
-  const formatPrice = (price) =>
-    price
-      ? `₹${Number(price).toLocaleString("en-IN")}`
-      : "Price on request";
+  const formatPrice = (price) => {
+    if (price === null || price === undefined || price === "") {
+      return "Price on request";
+    }
+
+    const value = Number(price);
+
+    if (Number.isNaN(value)) {
+      return "Price on request";
+    }
+
+    return `₹${value.toLocaleString("en-IN")}`;
+  };
 
   const formatStatus = (status) =>
-    status?.replaceAll("_", " ") || "";
+    status
+      ? String(status)
+          .replaceAll("_", " ")
+          .replace(/\b\w/g, (char) => char.toUpperCase())
+      : "";
 
   const propertyStatus = property?.status;
 
@@ -204,39 +209,51 @@ export default function PropertyDetails() {
     setShowVisitForm(true);
   };
 
+  /* =========================================================
+     LOADING
+     ========================================================= */
+
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FAF9F5] px-4">
+      <div className="flex min-h-screen items-center justify-center bg-[#F7F2E8] px-4">
         <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-[3px] border-[#E7E3D8] border-t-[#A6773B]" />
+          <div className="mx-auto h-11 w-11 animate-spin rounded-full border-[3px] border-[#D8CFB9] border-t-[#AD8332]" />
 
-          <p className="mt-4 font-sans text-sm text-[#8A8577]">
-            Loading property details…
+          <p className="mt-5 text-sm text-[#8A806D]">
+            Loading property details...
           </p>
         </div>
       </div>
     );
   }
 
+  /* =========================================================
+     ERROR
+     ========================================================= */
+
   if (error && !property) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FAF9F5] px-4">
-        <div className="w-full max-w-md border border-[#E7E3D8] bg-white p-8 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#FBEAE8] text-[#B3443B]">
-            <Home size={26} />
+      <div className="flex min-h-screen items-center justify-center bg-[#F7F2E8] px-4">
+        <div className="w-full max-w-md border border-[#D8CFB9] bg-[#FBF8F1] p-8 text-center shadow-[0_20px_50px_rgba(23,27,33,0.08)]">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center border border-[#E7C8C2] bg-[#FBEAE8] text-[#B3564B]">
+            <Home size={25} />
           </div>
 
-          <h1 className="mt-5 font-display text-2xl font-medium text-[#1C1B16]">
-            This listing isn&rsquo;t available
+          <h1
+            className="mt-5 text-2xl text-[#201C15]"
+            style={FRASER}
+          >
+            This listing isn't available
           </h1>
 
-          <p className="mt-2 font-sans text-sm leading-6 text-[#8A8577]">
+          <p className="mt-3 text-sm leading-6 text-[#8A806D]">
             {error}
           </p>
 
           <button
+            type="button"
             onClick={() => navigate(-1)}
-            className="mt-6 inline-flex items-center gap-2 border border-[#1C1B16] px-5 py-2.5 font-sans text-sm font-medium text-[#1C1B16] transition hover:bg-[#1C1B16] hover:text-white"
+            className="mt-7 inline-flex items-center gap-2 bg-[#171B21] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#AD8332] hover:text-[#171B21]"
           >
             <ArrowLeft size={15} />
             Go back
@@ -249,27 +266,34 @@ export default function PropertyDetails() {
   if (!property) return null;
 
   return (
-    <div className="min-h-screen bg-[#FAF9F5] font-sans text-[#1C1B16]">
-      {/* TOP BAR */}
-      <header className="sticky top-0 z-30 border-b border-[#E7E3D8] bg-[#FAF9F5]/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F7F2E8] text-[#201C15]">
+      {/* =====================================================
+          TOP BAR
+          ===================================================== */}
+
+      <header className="sticky top-0 z-30 border-b border-[#D8CFB9] bg-[#F7F2E8]/95 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
           <button
+            type="button"
             onClick={() => navigate(-1)}
-            className="group inline-flex items-center gap-2 text-sm font-medium text-[#5B5749] transition hover:text-[#1C1B16]"
+            className="group inline-flex items-center gap-2 text-sm font-medium text-[#5D5547] transition hover:text-[#8C6924]"
           >
             <ArrowLeft
               size={16}
-              className="transition-transform group-hover:-translate-x-0.5"
+              className="transition-transform group-hover:-translate-x-1"
             />
-            Back
+            Back to properties
           </button>
 
           {isOwnProperty && (
             <button
+              type="button"
               onClick={() =>
-                navigate(`/seller/properties/${property.id}/edit`)
+                navigate(
+                  `/seller/properties/${property.id}/edit`
+                )
               }
-              className="inline-flex items-center gap-2 border border-[#1C1B16] px-4 py-2 text-sm font-medium text-[#1C1B16] transition hover:bg-[#1C1B16] hover:text-white"
+              className="inline-flex items-center gap-2 border border-[#201C15] px-4 py-2 text-sm font-semibold text-[#201C15] transition hover:bg-[#171B21] hover:text-white"
             >
               <Edit3 size={15} />
               Edit listing
@@ -278,8 +302,11 @@ export default function PropertyDetails() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* ALERTS */}
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+        {/* ===================================================
+            ALERTS
+            =================================================== */}
+
         <div className="space-y-2.5">
           {leadSuccess && (
             <Alert
@@ -297,26 +324,41 @@ export default function PropertyDetails() {
             />
           )}
 
-          {error && <Alert tone="error" message={error} />}
+          {error && (
+            <Alert
+              tone="error"
+              message={error}
+            />
+          )}
         </div>
 
-        {/* GALLERY */}
-        <div className="mt-2 overflow-hidden border border-[#E7E3D8]">
+        {/* ===================================================
+            GALLERY
+            =================================================== */}
+
+        <div className="mt-2 overflow-hidden border border-[#D8CFB9] bg-[#EAE2CF]">
           <PropertyGallery
             images={property.images}
             title={property.title}
           />
         </div>
 
-        {/* MAIN GRID */}
-        <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
-          {/* MAIN CONTENT */}
+        {/* ===================================================
+            MAIN CONTENT
+            =================================================== */}
+
+        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-14">
+          {/* =================================================
+              LEFT
+              ================================================= */}
+
           <div>
             {/* HEADER */}
+
             <section>
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2">
                 {property.propertyType && (
-                  <span className="border border-[#D8D2BF] px-2.5 py-1 text-xs font-medium text-[#6B6555]">
+                  <span className="border border-[#C9BE9F] bg-[#F2ECDF] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#6D5A31]">
                     {property.propertyType}
                   </span>
                 )}
@@ -332,33 +374,47 @@ export default function PropertyDetails() {
                 )}
               </div>
 
-              <h1 className="mt-4 font-display text-3xl font-medium leading-tight text-[#1C1B16] sm:text-4xl">
+              <h1
+                className="mt-5 max-w-4xl text-3xl leading-tight text-[#201C15] sm:text-4xl lg:text-5xl"
+                style={FRASER}
+              >
                 {property.title || "Untitled property"}
               </h1>
 
-              <div className="mt-3 flex items-center gap-1.5 text-[#8A8577]">
-                <MapPin size={16} className="shrink-0 text-[#A6773B]" />
-                <span className="text-sm">
-                  {property.areaName || "Unknown area"},{" "}
-                  {property.city || "Unknown city"}
+              <div className="mt-4 flex items-center gap-2 text-sm text-[#6B6252]">
+                <MapPin
+                  size={16}
+                  className="shrink-0 text-[#8C6924]"
+                />
+
+                <span>
+                  {property.areaName || "Unknown area"}
+                  {property.city
+                    ? `, ${property.city}`
+                    : ""}
                 </span>
               </div>
 
               {/* PRICE */}
-              <div className="mt-8 flex flex-wrap items-baseline gap-3 border-y border-[#E7E3D8] py-6">
-                <span className="font-display text-4xl font-medium text-[#1C1B16]">
+
+              <div className="mt-8 flex flex-wrap items-end gap-4 border-y border-[#D8CFB9] py-6">
+                <span
+                  className="text-4xl text-[#201C15] sm:text-5xl"
+                  style={FRASER}
+                >
                   {formatPrice(property.price)}
                 </span>
 
                 {property.area != null && (
-                  <span className="text-sm text-[#8A8577]">
+                  <span className="pb-1 text-sm text-[#8A806D]">
                     {property.area} sq.ft
                   </span>
                 )}
               </div>
 
               {/* QUICK DETAILS */}
-              <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-[#E7E3D8] bg-[#E7E3D8] sm:grid-cols-4">
+
+              <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-[#D8CFB9] bg-[#D8CFB9] sm:grid-cols-4">
                 {property.bhk != null && (
                   <QuickDetail
                     icon={<BedDouble size={18} />}
@@ -370,7 +426,7 @@ export default function PropertyDetails() {
                 {property.area != null && (
                   <QuickDetail
                     icon={<Ruler size={18} />}
-                    label="Carpet area"
+                    label="Area"
                     value={`${property.area} sq.ft`}
                   />
                 )}
@@ -386,119 +442,164 @@ export default function PropertyDetails() {
                 <QuickDetail
                   icon={<Car size={18} />}
                   label="Parking"
-                  value={property.parking ? "Available" : "Not available"}
+                  value={
+                    property.parking
+                      ? "Available"
+                      : "Not available"
+                  }
                 />
               </div>
             </section>
 
-            {/* DESCRIPTION */}
-            <section className="mt-12">
+            {/* =================================================
+                DESCRIPTION
+                ================================================= */}
+
+            <section className="mt-14">
               <SectionTitle title="About this property" />
 
-              <p className="mt-4 max-w-[64ch] whitespace-pre-line text-[15px] leading-7 text-[#4B473C]">
+              <p className="mt-5 max-w-[68ch] whitespace-pre-line text-[15px] leading-7 text-[#514B3F]">
                 {property.description ||
                   "No description has been added for this property yet."}
               </p>
             </section>
 
-            {/* PROPERTY DETAILS */}
-            <section className="mt-12">
-              <SectionTitle title="Details" />
+            {/* =================================================
+                DETAILS
+                ================================================= */}
 
-              <div className="mt-5 divide-y divide-[#E7E3D8] border-t border-[#E7E3D8]">
+            <section className="mt-14">
+              <SectionTitle title="Property details" />
+
+              <div className="mt-5 divide-y divide-[#D8CFB9] border-y border-[#D8CFB9]">
                 <DetailRow
                   icon={<Sofa size={16} />}
                   label="Furnishing"
-                  value={property.furnished || "Not specified"}
+                  value={
+                    property.furnished ||
+                    "Not specified"
+                  }
                 />
 
                 <DetailRow
                   icon={<Compass size={16} />}
                   label="Facing"
-                  value={property.facing || "Not specified"}
+                  value={
+                    property.facing ||
+                    "Not specified"
+                  }
                 />
 
                 <DetailRow
                   icon={<CheckCircle2 size={16} />}
                   label="Ready to move"
-                  value={property.readyToMove ? "Yes" : "No"}
+                  value={
+                    property.readyToMove
+                      ? "Yes"
+                      : "No"
+                  }
                 />
 
                 <DetailRow
                   icon={<Home size={16} />}
                   label="New project"
-                  value={property.newProject ? "Yes" : "No"}
+                  value={
+                    property.newProject
+                      ? "Yes"
+                      : "No"
+                  }
                 />
 
                 <DetailRow
                   icon={<Home size={16} />}
                   label="Resale"
-                  value={property.resale ? "Yes" : "No"}
+                  value={
+                    property.resale
+                      ? "Yes"
+                      : "No"
+                  }
                 />
               </div>
             </section>
 
-            {/* REJECTION */}
-            {isRejected && property.rejectionReason && (
-              <section className="mt-12 border-l-2 border-[#B3443B] bg-[#FBEAE8]/50 py-4 pl-5 pr-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[#B3443B]">
-                  Rejection reason
-                </p>
+            {/* =================================================
+                REJECTION
+                ================================================= */}
 
-                <p className="mt-1.5 text-sm leading-6 text-[#7A332C]">
-                  {property.rejectionReason}
-                </p>
-              </section>
-            )}
+            {isRejected &&
+              property.rejectionReason && (
+                <section className="mt-12 border border-[#E7C8C2] bg-[#FBEAE8] p-5">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#B3564B]">
+                    Rejection reason
+                  </p>
+
+                  <p className="mt-2 text-sm leading-6 text-[#7A332C]">
+                    {property.rejectionReason}
+                  </p>
+                </section>
+              )}
           </div>
 
-          {/* SIDEBAR */}
+          {/* =================================================
+              RIGHT SIDEBAR
+              ================================================= */}
+
           <aside>
             {/* BUYER */}
+
             {isBuyer && (
-              <div className="sticky top-24 border border-[#E7E3D8] bg-white">
-                <div className="border-b border-[#E7E3D8] p-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F3EEE1] text-[#A6773B]">
+              <div className="sticky top-24 overflow-hidden border border-[#D8CFB9] bg-[#FBF8F1] shadow-[0_15px_40px_rgba(23,27,33,0.06)]">
+                <div className="border-b border-[#D8CFB9] bg-[#F2ECDF] p-6">
+                  <div className="flex h-11 w-11 items-center justify-center border border-[#C9BE9F] bg-[#F7F2E8] text-[#8C6924]">
                     <ShieldCheck size={19} />
                   </div>
 
-                  <h3 className="mt-4 font-display text-lg font-medium text-[#1C1B16]">
+                  <h3
+                    className="mt-5 text-xl text-[#201C15]"
+                    style={FRASER}
+                  >
                     Interested in this home?
                   </h3>
 
-                  <p className="mt-1.5 text-sm leading-6 text-[#8A8577]">
-                    Reach out to the listing agent for more details or a
-                    walkthrough.
+                  <p className="mt-2 text-sm leading-6 text-[#756C5D]">
+                    Reach out to the listing agent for
+                    more details or a walkthrough.
                   </p>
                 </div>
 
                 <div className="p-5">
                   <button
+                    type="button"
                     onClick={handleFavorite}
                     disabled={favoriteLoading}
-                    className="flex w-full items-center justify-center gap-2 border border-[#D8D2BF] py-3 text-sm font-medium text-[#4B473C] transition hover:border-[#1C1B16] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex w-full items-center justify-center gap-2 border border-[#C9BE9F] py-3 text-sm font-semibold text-[#4A4436] transition hover:border-[#AD8332] hover:bg-[#F2ECDF] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <Heart
                       size={17}
                       className={
                         favorite
-                          ? "fill-[#B3443B] text-[#B3443B]"
-                          : "text-[#8A8577]"
+                          ? "fill-[#B3564B] text-[#B3564B]"
+                          : "text-[#8A806D]"
                       }
                     />
-                    {favorite ? "Saved to favorites" : "Save to favorites"}
+
+                    {favorite
+                      ? "Saved to favorites"
+                      : "Save to favorites"}
                   </button>
 
                   <button
+                    type="button"
                     onClick={openLeadForm}
-                    className="mt-3 flex w-full items-center justify-center bg-[#1C1B16] py-3 text-sm font-medium text-white transition hover:bg-[#A6773B]"
+                    className="mt-3 flex w-full items-center justify-center bg-[#171B21] py-3.5 text-sm font-semibold text-white transition hover:bg-[#AD8332] hover:text-[#171B21]"
                   >
                     Contact agent
                   </button>
 
                   <button
+                    type="button"
                     onClick={openVisitForm}
-                    className="mt-3 flex w-full items-center justify-center gap-2 border border-[#D8D2BF] py-3 text-sm font-medium text-[#4B473C] transition hover:border-[#1C1B16]"
+                    className="mt-3 flex w-full items-center justify-center gap-2 border border-[#C9BE9F] py-3 text-sm font-semibold text-[#4A4436] transition hover:border-[#171B21] hover:bg-[#F2ECDF]"
                   >
                     <CalendarDays size={16} />
                     Schedule a visit
@@ -506,8 +607,15 @@ export default function PropertyDetails() {
 
                   {leadId && (
                     <div className="mt-4 flex items-start gap-2 border border-[#CFE0CD] bg-[#F1F6F0] p-3 text-xs leading-5 text-[#3E5F3A]">
-                      <CheckCircle2 size={14} className="mt-0.5 shrink-0" />
-                      Enquiry submitted — you can now schedule a visit.
+                      <CheckCircle2
+                        size={14}
+                        className="mt-0.5 shrink-0"
+                      />
+
+                      <span>
+                        Enquiry submitted — you can now
+                        schedule a visit.
+                      </span>
                     </div>
                   )}
                 </div>
@@ -515,13 +623,17 @@ export default function PropertyDetails() {
             )}
 
             {/* SELLER */}
+
             {isSeller && (
-              <div className="sticky top-24 border border-[#E7E3D8] bg-white p-6">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[#8A8577]">
+              <div className="sticky top-24 border border-[#D8CFB9] bg-[#FBF8F1] p-6">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A806D]">
                   Seller property
                 </p>
 
-                <h3 className="mt-2 font-display text-xl font-medium text-[#1C1B16]">
+                <h3
+                  className="mt-2 text-2xl text-[#201C15]"
+                  style={FRASER}
+                >
                   {isDraft
                     ? "Draft"
                     : isPending
@@ -533,16 +645,20 @@ export default function PropertyDetails() {
                     : "Property"}
                 </h3>
 
-                <p className="mt-1.5 text-sm leading-6 text-[#8A8577]">
-                  Manage this listing from your seller dashboard.
+                <p className="mt-2 text-sm leading-6 text-[#756C5D]">
+                  Manage this listing from your seller
+                  dashboard.
                 </p>
 
                 {isOwnProperty && (
                   <button
+                    type="button"
                     onClick={() =>
-                      navigate(`/seller/properties/${property.id}/edit`)
+                      navigate(
+                        `/seller/properties/${property.id}/edit`
+                      )
                     }
-                    className="mt-5 flex w-full items-center justify-center gap-2 bg-[#1C1B16] py-3 text-sm font-medium text-white transition hover:bg-[#A6773B]"
+                    className="mt-6 flex w-full items-center justify-center gap-2 bg-[#171B21] py-3.5 text-sm font-semibold text-white transition hover:bg-[#AD8332] hover:text-[#171B21]"
                   >
                     <Edit3 size={16} />
                     Edit listing
@@ -551,34 +667,43 @@ export default function PropertyDetails() {
 
                 {isDraft && isOwnProperty && (
                   <div className="mt-4 border border-[#EBDCB4] bg-[#FBF4E2] p-4 text-xs leading-5 text-[#8A6A1F]">
-                    Upload at least 5 images and submit for approval.
+                    Upload at least 5 images and submit
+                    for approval.
                   </div>
                 )}
               </div>
             )}
 
             {/* ADMIN */}
+
             {isAdmin && (
-              <div className="sticky top-24 border border-[#E7E3D8] bg-white p-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F3EEE1] text-[#A6773B]">
+              <div className="sticky top-24 border border-[#D8CFB9] bg-[#FBF8F1] p-6">
+                <div className="flex h-11 w-11 items-center justify-center border border-[#C9BE9F] bg-[#F2ECDF] text-[#8C6924]">
                   <ShieldCheck size={19} />
                 </div>
 
-                <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-[#8A8577]">
+                <p className="mt-5 text-[11px] font-bold uppercase tracking-wider text-[#8A806D]">
                   Administration
                 </p>
 
-                <h3 className="mt-2 font-display text-xl font-medium text-[#1C1B16]">
+                <h3
+                  className="mt-2 text-2xl text-[#201C15]"
+                  style={FRASER}
+                >
                   Property management
                 </h3>
 
-                <p className="mt-1.5 text-sm leading-6 text-[#8A8577]">
-                  Review and manage this listing from the admin dashboard.
+                <p className="mt-2 text-sm leading-6 text-[#756C5D]">
+                  Review and manage this listing from
+                  the admin dashboard.
                 </p>
 
                 <button
-                  onClick={() => navigate("/admin/properties")}
-                  className="mt-5 flex w-full items-center justify-center bg-[#1C1B16] py-3 text-sm font-medium text-white transition hover:bg-[#A6773B]"
+                  type="button"
+                  onClick={() =>
+                    navigate("/admin/properties")
+                  }
+                  className="mt-6 flex w-full items-center justify-center bg-[#171B21] py-3.5 text-sm font-semibold text-white transition hover:bg-[#AD8332] hover:text-[#171B21]"
                 >
                   Manage property
                 </button>
@@ -586,24 +711,29 @@ export default function PropertyDetails() {
             )}
 
             {/* NOT LOGGED IN */}
+
             {!token && (
-              <div className="sticky top-24 border border-[#E7E3D8] bg-white p-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F3EEE1] text-[#A6773B]">
+              <div className="sticky top-24 border border-[#D8CFB9] bg-[#FBF8F1] p-6">
+                <div className="flex h-11 w-11 items-center justify-center border border-[#C9BE9F] bg-[#F2ECDF] text-[#8C6924]">
                   <Home size={19} />
                 </div>
 
-                <h3 className="mt-5 font-display text-xl font-medium text-[#1C1B16]">
+                <h3
+                  className="mt-5 text-2xl text-[#201C15]"
+                  style={FRASER}
+                >
                   Interested?
                 </h3>
 
-                <p className="mt-2 text-sm leading-6 text-[#8A8577]">
-                  Log in as a buyer to save properties, contact an agent and
-                  schedule a visit.
+                <p className="mt-2 text-sm leading-6 text-[#756C5D]">
+                  Log in as a buyer to save properties,
+                  contact an agent and schedule a visit.
                 </p>
 
                 <button
+                  type="button"
                   onClick={() => navigate("/login")}
-                  className="mt-5 flex w-full items-center justify-center bg-[#1C1B16] py-3 text-sm font-medium text-white transition hover:bg-[#A6773B]"
+                  className="mt-6 flex w-full items-center justify-center bg-[#171B21] py-3.5 text-sm font-semibold text-white transition hover:bg-[#AD8332] hover:text-[#171B21]"
                 >
                   Log in as buyer
                 </button>
@@ -613,75 +743,109 @@ export default function PropertyDetails() {
         </div>
       </main>
 
-      {/* LEAD MODAL */}
+      {/* =====================================================
+          LEAD MODAL
+          ===================================================== */}
+
       {isBuyer && showLeadForm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#1C1B16]/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#171B21]/70 p-4 backdrop-blur-sm"
           onClick={() => setShowLeadForm(false)}
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto border border-[#E7E3D8] bg-white p-6 sm:p-7"
-            onClick={(event) => event.stopPropagation()}
+            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto border border-[#D8CFB9] bg-[#FBF8F1] p-6 shadow-[0_25px_80px_rgba(0,0,0,0.25)] sm:p-8"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
             <button
+              type="button"
               onClick={() => setShowLeadForm(false)}
-              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-[#8A8577] transition hover:bg-[#F3EEE1] hover:text-[#1C1B16]"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center border border-[#D8CFB9] text-[#756C5D] transition hover:border-[#AD8332] hover:bg-[#F2ECDF] hover:text-[#201C15]"
               aria-label="Close"
             >
               <X size={17} />
             </button>
 
-            <h2 className="pr-10 font-display text-2xl font-medium text-[#1C1B16]">
-              Contact agent
-            </h2>
+            <div className="pr-12">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#8C6924]">
+                EstateHub enquiry
+              </p>
 
-            <p className="mt-1 text-sm text-[#8A8577]">
-              Send your enquiry for this property.
-            </p>
+              <h2
+                className="mt-2 text-3xl text-[#201C15]"
+                style={FRASER}
+              >
+                Contact agent
+              </h2>
 
-            <div className="mt-5">
+              <p className="mt-1.5 text-sm text-[#8A806D]">
+                Send your enquiry for this property.
+              </p>
+            </div>
+
+            <div className="mt-6">
               <LeadForm
                 propertyId={id}
                 onSuccess={handleLeadSuccess}
-                onClose={() => setShowLeadForm(false)}
+                onClose={() =>
+                  setShowLeadForm(false)
+                }
               />
             </div>
           </div>
         </div>
       )}
 
-      {/* VISIT MODAL */}
+      {/* =====================================================
+          VISIT MODAL
+          ===================================================== */}
+
       {isBuyer && showVisitForm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#1C1B16]/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#171B21]/70 p-4 backdrop-blur-sm"
           onClick={() => setShowVisitForm(false)}
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto border border-[#E7E3D8] bg-white p-6 sm:p-7"
-            onClick={(event) => event.stopPropagation()}
+            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto border border-[#D8CFB9] bg-[#FBF8F1] p-6 shadow-[0_25px_80px_rgba(0,0,0,0.25)] sm:p-8"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
             <button
+              type="button"
               onClick={() => setShowVisitForm(false)}
-              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-[#8A8577] transition hover:bg-[#F3EEE1] hover:text-[#1C1B16]"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center border border-[#D8CFB9] text-[#756C5D] transition hover:border-[#AD8332] hover:bg-[#F2ECDF] hover:text-[#201C15]"
               aria-label="Close"
             >
               <X size={17} />
             </button>
 
-            <h2 className="pr-10 font-display text-2xl font-medium text-[#1C1B16]">
-              Schedule visit
-            </h2>
+            <div className="pr-12">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#8C6924]">
+                EstateHub visit
+              </p>
 
-            <p className="mt-1 text-sm text-[#8A8577]">
-              Choose your preferred date and time.
-            </p>
+              <h2
+                className="mt-2 text-3xl text-[#201C15]"
+                style={FRASER}
+              >
+                Schedule visit
+              </h2>
 
-            <div className="mt-5">
+              <p className="mt-1.5 text-sm text-[#8A806D]">
+                Choose your preferred date and time.
+              </p>
+            </div>
+
+            <div className="mt-6">
               <VisitForm
                 propertyId={id}
                 leadId={leadId}
                 onSuccess={handleVisitSuccess}
-                onClose={() => setShowVisitForm(false)}
+                onClose={() =>
+                  setShowVisitForm(false)
+                }
               />
             </div>
           </div>
@@ -691,43 +855,61 @@ export default function PropertyDetails() {
   );
 }
 
-/* ----------------------------- */
-/* REUSABLE UI COMPONENTS        */
-/* ----------------------------- */
+/* =========================================================
+   ALERT
+   ========================================================= */
 
 function Alert({ tone, icon, message }) {
   const isSuccess = tone === "success";
 
   return (
     <div
-      className={`flex items-start gap-2 border p-4 text-sm ${
+      className={`flex items-start gap-2.5 border p-4 text-sm ${
         isSuccess
           ? "border-[#CFE0CD] bg-[#F1F6F0] text-[#3E5F3A]"
-          : "border-[#F0CFC9] bg-[#FBEAE8] text-[#B3443B]"
+          : "border-[#E7C8C2] bg-[#FBEAE8] text-[#B3564B]"
       }`}
     >
-      {icon}
+      {icon || (
+        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-current" />
+      )}
+
       <span>{message}</span>
     </div>
   );
 }
 
-function StatusTag({ label, published, pending, rejected, draft }) {
-  let className = "border-[#D8D2BF] text-[#6B6555]";
+/* =========================================================
+   STATUS TAG
+   ========================================================= */
+
+function StatusTag({
+  label,
+  published,
+  pending,
+  rejected,
+  draft,
+}) {
+  let className =
+    "border-[#C9BE9F] bg-[#F2ECDF] text-[#6B6252]";
 
   if (published) {
-    className = "border-[#CFE0CD] text-[#3E5F3A]";
+    className =
+      "border-[#CFE0CD] bg-[#F1F6F0] text-[#3E5F3A]";
   } else if (pending) {
-    className = "border-[#EBDCB4] text-[#8A6A1F]";
+    className =
+      "border-[#EBDCB4] bg-[#FBF4E2] text-[#8A6A1F]";
   } else if (rejected) {
-    className = "border-[#F0CFC9] text-[#B3443B]";
+    className =
+      "border-[#E7C8C2] bg-[#FBEAE8] text-[#B3564B]";
   } else if (draft) {
-    className = "border-[#D8D2BF] text-[#6B6555]";
+    className =
+      "border-[#C9BE9F] bg-[#F2ECDF] text-[#6B6252]";
   }
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-xs font-medium ${className}`}
+      className={`inline-flex items-center gap-1.5 border px-3 py-1.5 text-[11px] font-semibold ${className}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {label}
@@ -735,39 +917,66 @@ function StatusTag({ label, published, pending, rejected, draft }) {
   );
 }
 
+/* =========================================================
+   QUICK DETAIL
+   ========================================================= */
+
 function QuickDetail({ icon, label, value }) {
   return (
-    <div className="bg-[#FAF9F5] p-4">
-      <div className="text-[#A6773B]">{icon}</div>
+    <div className="bg-[#FBF8F1] p-4">
+      <div className="text-[#8C6924]">
+        {icon}
+      </div>
 
-      <p className="mt-3 text-[11px] font-medium uppercase tracking-wide text-[#8A8577]">
+      <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-[#8A806D]">
         {label}
       </p>
 
-      <p className="mt-1 truncate text-sm font-semibold text-[#1C1B16]">
+      <p className="mt-1 truncate text-sm font-semibold text-[#201C15]">
         {value}
       </p>
     </div>
   );
 }
 
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
+
 function SectionTitle({ title }) {
   return (
-    <h2 className="font-display text-xl font-medium text-[#1C1B16]">
-      {title}
-    </h2>
-  );
-}
+    <div className="flex items-center gap-4">
+      <h2
+        className="text-2xl text-[#201C15]"
+        style={FRASER}
+      >
+        {title}
+      </h2>
 
-function DetailRow({ icon, label, value }) {
-  return (
-    <div className="flex items-center justify-between py-3.5">
-      <div className="flex items-center gap-2.5 text-sm text-[#6B6555]">
-        <span className="text-[#A6773B]">{icon}</span>
-        {label}
-      </div>
-
-      <span className="text-sm font-medium text-[#1C1B16]">{value}</span>
+      <div className="h-px flex-1 bg-[#D8CFB9]" />
     </div>
   );
 }
+
+/* =========================================================
+   DETAIL ROW
+   ========================================================= */
+
+function DetailRow({ icon, label, value }) {
+  return (
+    <div className="flex items-center justify-between gap-6 py-4">
+      <div className="flex items-center gap-2.5 text-sm text-[#6B6252]">
+        <span className="text-[#8C6924]">
+          {icon}
+        </span>
+
+        {label}
+      </div>
+
+      <span className="text-right text-sm font-semibold text-[#201C15]">
+        {value}
+      </span>
+    </div>
+  );
+}
+

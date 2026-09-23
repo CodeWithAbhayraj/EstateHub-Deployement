@@ -1,3 +1,4 @@
+
 import { Outlet } from "react-router-dom";
 
 import Navbar from "./Navbar";
@@ -5,10 +6,10 @@ import Footer from "./Footer";
 
 function PublicLayout() {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
+    <div className="flex min-h-screen flex-col bg-[#F8F5ED] text-[#201C15]">
       <Navbar />
 
-      <main className="flex-1">
+      <main className="min-w-0 flex-1">
         <Outlet />
       </main>
 
@@ -18,3 +19,4 @@ function PublicLayout() {
 }
 
 export default PublicLayout;
+

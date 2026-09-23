@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   Menu,
   X,
@@ -10,14 +11,14 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-/* Matches the display serif used on the Home page. Falls back cleanly to
-   Tailwind's default serif stack if Fraunces isn't loaded — see Home.jsx
-   for the optional Google Fonts link. */
-const FRASER = { fontFamily: "'Fraunces', Georgia, 'Times New Roman', serif" };
+const FRASER = {
+  fontFamily: "'Fraunces', Georgia, 'Times New Roman', serif",
+};
 
 function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const token = localStorage.getItem("token");
   const savedUser = localStorage.getItem("user");
@@ -49,6 +50,7 @@ function Navbar() {
     localStorage.removeItem("user");
 
     setOpen(false);
+    setProfileOpen(false);
 
     navigate("/login", { replace: true });
   };
@@ -63,15 +65,23 @@ function Navbar() {
         <div className="flex h-[72px] items-center justify-between">
           {/* ================= LOGO ================= */}
 
-          <Link to="/" onClick={closeMobile} className="group flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center border border-[#171B21] bg-[#171B21] text-[#F2ECDF] transition group-hover:bg-[#AD8332] group-hover:border-[#AD8332]">
+          <Link
+            to="/"
+            onClick={closeMobile}
+            className="group flex items-center gap-3"
+          >
+            <div className="flex h-10 w-10 items-center justify-center border border-[#171B21] bg-[#171B21] text-[#F2ECDF] transition duration-200 group-hover:border-[#AD8332] group-hover:bg-[#AD8332]">
               <Building2 size={19} strokeWidth={2} />
             </div>
 
             <div className="leading-none">
-              <div className="text-lg text-[#201C15]" style={FRASER}>
+              <div
+                className="text-lg tracking-tight text-[#201C15]"
+                style={FRASER}
+              >
                 Estate<span className="text-[#8C6924]">Hub</span>
               </div>
+
               <div className="mt-1 hidden text-[10px] text-[#8A806D] sm:block">
                 Property listing index
               </div>
@@ -82,9 +92,19 @@ function Navbar() {
 
           <div className="hidden items-center gap-1 md:flex">
             <NavItem to="/" label="Home" />
-            <NavItem to="/properties" label="Properties" icon={<Search size={15} />} />
+
+            <NavItem
+              to="/properties"
+              label="Properties"
+              icon={<Search size={15} />}
+            />
+
             {token && (
-              <NavItem to={dashboardPath} label="Dashboard" icon={<LayoutDashboard size={15} />} />
+              <NavItem
+                to={dashboardPath}
+                label="Dashboard"
+                icon={<LayoutDashboard size={15} />}
+              />
             )}
           </div>
 
@@ -93,31 +113,67 @@ function Navbar() {
           <div className="hidden items-center gap-3 md:flex">
             {token ? (
               <>
-                {/* User chip — ledger entry style */}
-                <div className="flex items-center gap-3 border border-[#D8CFB9] bg-white/60 px-3 py-2">
-                  <div className="flex h-9 w-9 items-center justify-center border border-[#171B21] bg-[#171B21] text-sm font-medium text-[#F2ECDF]">
-                    {userInitial}
-                  </div>
+                {/* User Profile */}
 
-                  <div className="max-w-[130px]">
-                    <p className="truncate text-sm font-medium text-[#201C15]">{name}</p>
-                    <p className="text-[10px] text-[#8A806D]">
-                      {role?.replace("_", " ") || "User"}
-                    </p>
-                  </div>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setProfileOpen((prev) => !prev)}
+                    className="flex items-center gap-3 border border-[#D8CFB9] bg-white/60 px-3 py-2 transition hover:border-[#BDAF91] hover:bg-white"
+                    aria-expanded={profileOpen}
+                    aria-label="Open profile menu"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center border border-[#171B21] bg-[#171B21] text-sm font-medium text-[#F2ECDF]">
+                      {userInitial}
+                    </div>
 
-                  <ChevronDown size={14} className="text-[#8A806D]" />
+                    <div className="max-w-[130px] text-left">
+                      <p className="truncate text-sm font-medium text-[#201C15]">
+                        {name}
+                      </p>
+
+                      <p className="text-[10px] uppercase tracking-wide text-[#8A806D]">
+                        {role?.replace("_", " ") || "User"}
+                      </p>
+                    </div>
+
+                    <ChevronDown
+                      size={14}
+                      className={`text-[#8A806D] transition-transform duration-200 ${
+                        profileOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {/* Profile Dropdown */}
+
+                  {profileOpen && (
+                    <div className="absolute right-0 top-[calc(100%+10px)] w-52 overflow-hidden border border-[#D8CFB9] bg-[#FDFBF6] p-1.5 shadow-xl shadow-[#171B21]/10">
+                      <Link
+                        to={dashboardPath}
+                        onClick={() => setProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-[#201C15] transition hover:bg-[#F2ECDF]"
+                      >
+                        <LayoutDashboard
+                          size={16}
+                          className="text-[#8C6924]"
+                        />
+                        Dashboard
+                      </Link>
+
+                      <div className="my-1 border-t border-[#D8CFB9]" />
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-3 px-3 py-2.5 text-sm font-medium text-[#B3564B] transition hover:bg-[#B3564B]/10"
+                      >
+                        <LogOut size={16} />
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
-
-                {/* Logout */}
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="inline-flex items-center gap-2 border border-[#D8CFB9] bg-transparent px-4 py-2.5 text-sm font-medium text-[#4A4436] transition hover:border-[#B3564B] hover:text-[#B3564B]"
-                >
-                  <LogOut size={15} />
-                  Logout
-                </button>
               </>
             ) : (
               <>
@@ -130,7 +186,7 @@ function Navbar() {
 
                 <Link
                   to="/register"
-                  className="inline-flex items-center gap-2 bg-[#AD8332] px-5 py-2.5 text-sm font-semibold text-[#171B21] transition hover:bg-[#c39843]"
+                  className="inline-flex items-center gap-2 bg-[#AD8332] px-5 py-2.5 text-sm font-semibold text-[#171B21] transition hover:bg-[#C39843]"
                 >
                   Get started
                   <span aria-hidden="true">→</span>
@@ -145,7 +201,8 @@ function Navbar() {
             type="button"
             onClick={() => setOpen((prev) => !prev)}
             className="flex h-10 w-10 items-center justify-center border border-[#D8CFB9] bg-white/60 text-[#201C15] transition hover:bg-white md:hidden"
-            aria-label="Toggle menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
           >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -156,6 +213,7 @@ function Navbar() {
         {open && (
           <div className="border-t border-[#D8CFB9] py-4 md:hidden">
             {/* User information */}
+
             {token && (
               <div className="mb-3 flex items-center gap-3 border border-[#D8CFB9] bg-white/50 p-4">
                 <div className="flex h-11 w-11 items-center justify-center border border-[#171B21] bg-[#171B21] font-medium text-[#F2ECDF]">
@@ -163,8 +221,11 @@ function Navbar() {
                 </div>
 
                 <div>
-                  <p className="text-sm font-medium text-[#201C15]">{name}</p>
-                  <p className="mt-0.5 text-xs text-[#8A806D]">
+                  <p className="text-sm font-medium text-[#201C15]">
+                    {name}
+                  </p>
+
+                  <p className="mt-0.5 text-xs uppercase tracking-wide text-[#8A806D]">
                     {role?.replace("_", " ") || "User"}
                   </p>
                 </div>
@@ -172,14 +233,21 @@ function Navbar() {
             )}
 
             {/* Navigation */}
+
             <div className="flex flex-col gap-1">
-              <MobileNavItem to="/" label="Home" onClick={closeMobile} />
+              <MobileNavItem
+                to="/"
+                label="Home"
+                onClick={closeMobile}
+              />
+
               <MobileNavItem
                 to="/properties"
                 label="Properties"
                 icon={<Search size={16} />}
                 onClick={closeMobile}
               />
+
               {token && (
                 <MobileNavItem
                   to={dashboardPath}
@@ -191,6 +259,7 @@ function Navbar() {
             </div>
 
             {/* Actions */}
+
             <div className="mt-4 border-t border-[#D8CFB9] pt-4">
               {token ? (
                 <button
@@ -214,7 +283,7 @@ function Navbar() {
                   <Link
                     to="/register"
                     onClick={closeMobile}
-                    className="bg-[#AD8332] px-4 py-3 text-center text-sm font-semibold text-[#171B21] transition hover:bg-[#c39843]"
+                    className="bg-[#AD8332] px-4 py-3 text-center text-sm font-semibold text-[#171B21] transition hover:bg-[#C39843]"
                   >
                     Get started
                   </Link>
@@ -228,42 +297,80 @@ function Navbar() {
   );
 }
 
-/* ========================================================= */
-/* DESKTOP NAV ITEM */
-/* ========================================================= */
+/* =========================================================
+   DESKTOP NAV ITEM
+   ========================================================= */
 
 function NavItem({ to, label, icon }) {
   return (
-    <Link
+    <NavLink
       to={to}
-      className="group relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#4A4436] transition hover:text-[#201C15]"
+      end={to === "/"}
+      className={({ isActive }) =>
+        `group relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition ${
+          isActive
+            ? "text-[#201C15]"
+            : "text-[#4A4436] hover:text-[#201C15]"
+        }`
+      }
     >
-      {icon && <span className="text-[#8A806D] transition group-hover:text-[#8C6924]">{icon}</span>}
-      {label}
-      <span className="absolute bottom-1 left-4 right-4 h-px scale-x-0 bg-[#AD8332] transition-transform duration-300 group-hover:scale-x-100" />
-    </Link>
+      {({ isActive }) => (
+        <>
+          {icon && (
+            <span
+              className={`transition ${
+                isActive
+                  ? "text-[#8C6924]"
+                  : "text-[#8A806D] group-hover:text-[#8C6924]"
+              }`}
+            >
+              {icon}
+            </span>
+          )}
+
+          {label}
+
+          <span
+            className={`absolute bottom-1 left-4 right-4 h-px bg-[#AD8332] transition-transform duration-300 ${
+              isActive
+                ? "scale-x-100"
+                : "scale-x-0 group-hover:scale-x-100"
+            }`}
+          />
+        </>
+      )}
+    </NavLink>
   );
 }
 
-/* ========================================================= */
-/* MOBILE NAV ITEM */
-/* ========================================================= */
+/* =========================================================
+   MOBILE NAV ITEM
+   ========================================================= */
 
 function MobileNavItem({ to, label, icon, onClick }) {
   return (
-    <Link
+    <NavLink
       to={to}
+      end={to === "/"}
       onClick={onClick}
-      className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-[#201C15] transition hover:bg-white/60"
+      className={({ isActive }) =>
+        `flex items-center gap-3 px-4 py-3 text-sm font-medium transition ${
+          isActive
+            ? "bg-white text-[#8C6924]"
+            : "text-[#201C15] hover:bg-white/60"
+        }`
+      }
     >
       {icon ? (
         <span className="text-[#8A806D]">{icon}</span>
       ) : (
         <span className="h-1.5 w-1.5 rounded-full bg-[#AD8332]" />
       )}
+
       {label}
-    </Link>
+    </NavLink>
   );
 }
 
 export default Navbar;
+
