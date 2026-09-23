@@ -13,6 +13,7 @@ import {
   Sparkles,
   ChevronRight,
 } from "lucide-react";
+
 import { useAuth } from "../../context/AuthContext";
 import { getPublishedProperties } from "../../api/propertyApi";
 import { getMyFavorites } from "../../api/favoriteApi";
@@ -73,8 +74,6 @@ export default function BuyerDashboard() {
       value: stats.properties,
       icon: Building2,
       link: "/properties",
-      accent: "text-blue-600",
-      bg: "bg-blue-50",
       description: "Explore listings",
     },
     {
@@ -82,8 +81,6 @@ export default function BuyerDashboard() {
       value: stats.favorites,
       icon: Heart,
       link: "/buyer/favorites",
-      accent: "text-rose-600",
-      bg: "bg-rose-50",
       description: "Saved properties",
     },
     {
@@ -91,8 +88,6 @@ export default function BuyerDashboard() {
       value: stats.visits,
       icon: CalendarDays,
       link: "/buyer/visits",
-      accent: "text-emerald-600",
-      bg: "bg-emerald-50",
       description: "Scheduled visits",
     },
     {
@@ -100,8 +95,6 @@ export default function BuyerDashboard() {
       value: stats.notifications,
       icon: Bell,
       link: "/buyer/notifications",
-      accent: "text-amber-600",
-      bg: "bg-amber-50",
       description: "Unread updates",
     },
   ];
@@ -112,64 +105,102 @@ export default function BuyerDashboard() {
       desc: "Search available properties",
       link: "/properties",
       icon: Search,
-      accent: "bg-blue-600",
     },
     {
       title: "My favorites",
       desc: "Manage saved properties",
       link: "/buyer/favorites",
       icon: Heart,
-      accent: "bg-rose-600",
     },
     {
       title: "My visits",
       desc: "Check scheduled visits",
       link: "/buyer/visits",
       icon: CalendarDays,
-      accent: "bg-emerald-600",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Hero Header */}
-      <section className="relative overflow-hidden bg-slate-950">
-        {/* Decorative glow */}
-        <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-blue-600/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 left-1/4 h-80 w-80 rounded-full bg-indigo-600/10 blur-3xl" />
+    <div className="relative min-h-screen overflow-hidden bg-[#F8F5ED] text-[#201C15]">
+      {/* Blueprint background */}
+      <div className="pointer-events-none absolute inset-0 opacity-40">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(173,131,50,0.06) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(173,131,50,0.06) 1px, transparent 1px)
+            `,
+            backgroundSize: "42px 42px",
+          }}
+        />
+      </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between">
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-[#2B2A26] bg-[#171B21]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.08]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(216,184,118,.7) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(216,184,118,.7) 1px, transparent 1px)
+            `,
+            backgroundSize: "46px 46px",
+          }}
+        />
+
+        <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-[#AD8332]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 left-1/3 h-80 w-80 rounded-full bg-white/[0.03] blur-3xl" />
+
+        <div className="relative mx-auto max-w-[1500px] px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
             <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/70">
-                <Sparkles size={13} className="text-blue-400" />
-                Buyer Dashboard
+              <div className="mb-5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#D8B876]">
+                <span className="h-px w-8 bg-[#AD8332]" />
+                Buyer workspace
               </div>
 
               <h1
-                className="max-w-2xl text-3xl font-medium tracking-tight text-white sm:text-4xl lg:text-5xl"
                 style={FRASER}
+                className="max-w-3xl text-3xl font-semibold tracking-tight text-[#FBF8F1] sm:text-4xl lg:text-5xl"
               >
                 Welcome back,{" "}
-                <span className="text-blue-400">
+                <span className="text-[#D8B876]">
                   {user?.name || "Buyer"}
                 </span>
               </h1>
 
-              <p className="mt-3 max-w-xl text-sm leading-6 text-white/55 sm:text-base">
-                Discover properties, manage your favorites and keep track
-                of your upcoming visits.
+              <p className="mt-4 max-w-xl text-sm leading-7 text-white/55 sm:text-base">
+                Discover properties, save the ones you love and keep track
+                of your upcoming visits from one place.
               </p>
+
+              <div className="mt-5 flex flex-wrap gap-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/45">
+                <span className="flex items-center gap-2">
+                  <ShieldCheck size={13} className="text-[#D8B876]" />
+                  Secure account
+                </span>
+
+                <span className="flex items-center gap-2">
+                  <Building2 size={13} className="text-[#D8B876]" />
+                  Property discovery
+                </span>
+
+                <span className="flex items-center gap-2">
+                  <CalendarDays size={13} className="text-[#D8B876]" />
+                  Visit tracking
+                </span>
+              </div>
             </div>
 
             <Link
               to="/properties"
-              className="group inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-blue-50"
+              className="group inline-flex w-fit items-center gap-2 border border-[#D8B876] bg-[#D8B876] px-5 py-3 text-sm font-semibold text-[#201C15] transition hover:bg-[#E3C98F]"
             >
-              <Search size={17} />
+              <Search size={16} />
               Browse properties
               <ArrowRight
-                size={16}
+                size={15}
                 className="transition group-hover:translate-x-1"
               />
             </Link>
@@ -178,36 +209,42 @@ export default function BuyerDashboard() {
       </section>
 
       {/* Main */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-
+      <main className="relative mx-auto max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         {/* Error */}
         {error && (
-          <div className="mb-7 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+          <div className="mb-7 flex items-start gap-3 border border-[#D9A39C] bg-[#F9ECE9] px-4 py-3.5 text-sm text-[#9B463C]">
             <Bell size={17} className="mt-0.5 shrink-0" />
+
             <div>
-              <p className="font-semibold">Dashboard update failed</p>
-              <p className="mt-1 text-rose-600">{error}</p>
+              <p className="font-semibold">
+                Dashboard update failed
+              </p>
+
+              <p className="mt-1 text-[#A65B51]">
+                {error}
+              </p>
             </div>
           </div>
         )}
 
-        {/* Stats */}
+        {/* Overview */}
         <section>
-          <div className="mb-4 flex items-end justify-between">
+          <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#AD8332]">
+                <span className="h-px w-7 bg-[#AD8332]" />
                 Your activity
-              </p>
+              </div>
 
               <h2
-                className="mt-1 text-2xl font-medium text-slate-900"
                 style={FRASER}
+                className="mt-1.5 text-2xl font-semibold text-[#201C15] sm:text-3xl"
               >
                 Overview
               </h2>
             </div>
 
-            <div className="hidden items-center gap-1.5 text-xs text-slate-400 sm:flex">
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8A806D]">
               <ShieldCheck size={14} />
               EstateHub account
             </div>
@@ -221,42 +258,37 @@ export default function BuyerDashboard() {
                 <Link
                   key={card.title}
                   to={card.link}
-                  className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl"
+                  className="group relative overflow-hidden border border-[#D8CFB9] bg-[#FBF8F1] p-5 shadow-[0_10px_30px_rgba(32,28,21,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-[#C8B78F] hover:shadow-[0_16px_38px_rgba(32,28,21,0.08)]"
                 >
                   <div className="flex items-start justify-between">
-                    <div
-                      className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.bg}`}
-                    >
-                      <Icon size={19} className={card.accent} />
+                    <div className="flex h-11 w-11 items-center justify-center border border-[#D8B876] bg-[#F2ECDF] text-[#8C6924]">
+                      <Icon size={19} strokeWidth={1.8} />
                     </div>
 
                     <ChevronRight
                       size={17}
-                      className="text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-500"
+                      className="text-[#B8AE9A] transition group-hover:translate-x-1 group-hover:text-[#8C6924]"
                     />
                   </div>
 
                   <div className="mt-5">
-                    <p className="text-sm font-medium text-slate-500">
+                    <p className="text-sm font-medium text-[#6B6252]">
                       {card.title}
                     </p>
 
                     <p
-                      className="mt-1 text-3xl font-medium text-slate-950"
                       style={FRASER}
+                      className="mt-1 text-3xl font-semibold text-[#201C15]"
                     >
                       {loading ? "…" : card.value}
                     </p>
 
-                    <p className="mt-2 text-xs text-slate-400">
+                    <p className="mt-2 text-xs text-[#8A806D]">
                       {card.description}
                     </p>
                   </div>
 
-                  {/* Bottom accent */}
-                  <div
-                    className={`absolute bottom-0 left-0 h-1 w-0 ${card.bg} transition-all duration-300 group-hover:w-full`}
-                  />
+                  <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-[#AD8332] transition-all duration-300 group-hover:w-full" />
                 </Link>
               );
             })}
@@ -265,14 +297,15 @@ export default function BuyerDashboard() {
 
         {/* Quick Actions */}
         <section className="mt-10">
-          <div className="mb-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+          <div className="mb-5">
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#AD8332]">
+              <span className="h-px w-7 bg-[#AD8332]" />
               Shortcuts
-            </p>
+            </div>
 
             <h2
-              className="mt-1 text-2xl font-medium text-slate-900"
               style={FRASER}
+              className="mt-1.5 text-2xl font-semibold text-[#201C15] sm:text-3xl"
             >
               Quick actions
             </h2>
@@ -286,27 +319,25 @@ export default function BuyerDashboard() {
                 <Link
                   key={action.title}
                   to={action.link}
-                  className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg"
+                  className="group flex items-center gap-4 border border-[#D8CFB9] bg-[#FBF8F1] p-5 shadow-[0_8px_25px_rgba(32,28,21,0.03)] transition duration-300 hover:-translate-y-0.5 hover:border-[#C8B78F] hover:shadow-[0_14px_32px_rgba(32,28,21,0.07)]"
                 >
-                  <div
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white shadow-sm ${action.accent}`}
-                  >
-                    <Icon size={19} />
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-[#D8B876] bg-[#F2ECDF] text-[#8C6924]">
+                    <Icon size={19} strokeWidth={1.8} />
                   </div>
 
                   <div className="min-w-0">
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold text-[#201C15]">
                       {action.title}
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-[#6B6252]">
                       {action.desc}
                     </p>
                   </div>
 
                   <ArrowRight
                     size={17}
-                    className="ml-auto shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-700"
+                    className="ml-auto shrink-0 text-[#B8AE9A] transition group-hover:translate-x-1 group-hover:text-[#8C6924]"
                   />
                 </Link>
               );
@@ -315,28 +346,32 @@ export default function BuyerDashboard() {
         </section>
 
         {/* Discovery CTA */}
-        <section className="relative mt-10 overflow-hidden rounded-3xl bg-slate-950 shadow-2xl">
-          {/* Background pattern */}
+        <section className="relative mt-10 overflow-hidden border border-[#2C2B27] bg-[#171B21] shadow-[0_18px_45px_rgba(32,28,21,0.12)]">
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.045]"
+            className="pointer-events-none absolute inset-0 opacity-[0.055]"
             style={{
               backgroundImage:
-                "linear-gradient(rgba(255,255,255,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.8) 1px, transparent 1px)",
+                "linear-gradient(rgba(216,184,118,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(216,184,118,.8) 1px, transparent 1px)",
               backgroundSize: "44px 44px",
             }}
           />
 
-          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl" />
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#AD8332]/10 blur-3xl" />
 
-          <div className="relative flex flex-col gap-7 p-7 sm:p-9 md:flex-row md:items-center md:justify-between">
+          <div className="relative flex flex-col gap-8 p-7 sm:p-9 md:flex-row md:items-center md:justify-between lg:p-10">
             <div className="max-w-2xl">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-blue-400 ring-1 ring-white/10">
-                <Home size={22} />
+              <div className="mb-5 flex h-11 w-11 items-center justify-center border border-[#D8B876]/30 bg-white/[0.04] text-[#D8B876]">
+                <Home size={21} strokeWidth={1.7} />
+              </div>
+
+              <div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#D8B876]">
+                <Sparkles size={12} />
+                Your next move
               </div>
 
               <h2
-                className="text-2xl font-medium text-white sm:text-3xl"
                 style={FRASER}
+                className="text-2xl font-semibold text-[#FBF8F1] sm:text-3xl"
               >
                 Find a place that feels like home.
               </h2>
@@ -346,19 +381,19 @@ export default function BuyerDashboard() {
                 and schedule a visit when you're ready.
               </p>
 
-              <div className="mt-5 flex flex-wrap gap-4 text-xs text-white/55">
+              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/45">
                 <span className="flex items-center gap-2">
-                  <ShieldCheck size={14} className="text-emerald-400" />
+                  <ShieldCheck size={13} className="text-[#D8B876]" />
                   Verified listings
                 </span>
 
                 <span className="flex items-center gap-2">
-                  <Search size={14} className="text-blue-400" />
+                  <Search size={13} className="text-[#D8B876]" />
                   Easy discovery
                 </span>
 
                 <span className="flex items-center gap-2">
-                  <CalendarDays size={14} className="text-amber-400" />
+                  <CalendarDays size={13} className="text-[#D8B876]" />
                   Schedule visits
                 </span>
               </div>
@@ -366,27 +401,27 @@ export default function BuyerDashboard() {
 
             <Link
               to="/properties"
-              className="group inline-flex w-fit shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition hover:-translate-y-0.5 hover:bg-blue-500"
+              className="group inline-flex w-fit shrink-0 items-center gap-2 border border-[#D8B876] bg-[#D8B876] px-5 py-3.5 text-sm font-semibold text-[#201C15] transition hover:bg-[#E3C98F]"
             >
               Explore properties
               <ArrowRight
-                size={17}
+                size={16}
                 className="transition group-hover:translate-x-1"
               />
             </Link>
           </div>
         </section>
 
-        {/* Bottom trust strip */}
-        <div className="mt-8 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        {/* Trust strip */}
+        <div className="mt-8 flex flex-col gap-3 border border-[#D8CFB9] bg-[#FBF8F1] px-5 py-4 text-xs text-[#6B6252] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
-            <ShieldCheck size={16} className="text-emerald-600" />
+            <ShieldCheck size={16} className="text-[#3F6B52]" />
             Your buyer activity is securely managed by EstateHub.
           </div>
 
           <Link
             to="/properties"
-            className="inline-flex items-center gap-1 font-semibold text-slate-700 transition hover:text-blue-600"
+            className="inline-flex items-center gap-1 font-semibold text-[#4A4436] transition hover:text-[#8C6924]"
           >
             Continue exploring
             <ArrowRight size={13} />
