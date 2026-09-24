@@ -17,7 +17,6 @@ import {
   X,
 } from "lucide-react";
 
-
 import { getMyFavorites, removeFavorite } from "../../api/favoriteApi";
 import { getPropertyById } from "../../api/propertyApi";
 
