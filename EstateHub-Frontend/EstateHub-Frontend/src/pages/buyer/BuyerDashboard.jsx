@@ -41,6 +41,7 @@ export default function BuyerDashboard() {
     const load = async () => {
       try {
         setLoading(true);
+        setError("");
 
         const [properties, favorites, visits, count] = await Promise.all([
           getPublishedProperties(),
@@ -122,7 +123,8 @@ export default function BuyerDashboard() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#F8F5ED] text-[#201C15]">
-      {/* Blueprint background */}
+
+      {/* Blueprint Background */}
       <div className="pointer-events-none absolute inset-0 opacity-40">
         <div
           className="absolute inset-0"
@@ -138,6 +140,7 @@ export default function BuyerDashboard() {
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-[#2B2A26] bg-[#171B21]">
+
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.08]"
           style={{
@@ -154,6 +157,7 @@ export default function BuyerDashboard() {
 
         <div className="relative mx-auto max-w-[1500px] px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+
             <div>
               <div className="mb-5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#D8B876]">
                 <span className="h-px w-8 bg-[#AD8332]" />
@@ -210,6 +214,7 @@ export default function BuyerDashboard() {
 
       {/* Main */}
       <main className="relative mx-auto max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+
         {/* Error */}
         {error && (
           <div className="mb-7 flex items-start gap-3 border border-[#D9A39C] bg-[#F9ECE9] px-4 py-3.5 text-sm text-[#9B463C]">
@@ -347,6 +352,7 @@ export default function BuyerDashboard() {
 
         {/* Discovery CTA */}
         <section className="relative mt-10 overflow-hidden border border-[#2C2B27] bg-[#171B21] shadow-[0_18px_45px_rgba(32,28,21,0.12)]">
+
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.055]"
             style={{
@@ -360,6 +366,7 @@ export default function BuyerDashboard() {
 
           <div className="relative flex flex-col gap-8 p-7 sm:p-9 md:flex-row md:items-center md:justify-between lg:p-10">
             <div className="max-w-2xl">
+
               <div className="mb-5 flex h-11 w-11 items-center justify-center border border-[#D8B876]/30 bg-white/[0.04] text-[#D8B876]">
                 <Home size={21} strokeWidth={1.7} />
               </div>
@@ -412,7 +419,7 @@ export default function BuyerDashboard() {
           </div>
         </section>
 
-        {/* Trust strip */}
+        {/* Trust Strip */}
         <div className="mt-8 flex flex-col gap-3 border border-[#D8CFB9] bg-[#FBF8F1] px-5 py-4 text-xs text-[#6B6252] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <ShieldCheck size={16} className="text-[#3F6B52]" />
