@@ -17,6 +17,7 @@ const FRASER = {
   fontFamily: "'Fraunces', Georgia, 'Times New Roman', serif",
 };
 
+
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
