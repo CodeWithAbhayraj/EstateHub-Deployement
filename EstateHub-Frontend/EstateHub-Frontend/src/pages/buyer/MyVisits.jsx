@@ -18,6 +18,7 @@ const FRASER = {
   fontFamily: "'Fraunces', Georgia, 'Times New Roman', serif",
 };
 
+
 export default function MyVisits() {
   const [visits, setVisits] = useState([]);
   const [loading, setLoading] = useState(true);
