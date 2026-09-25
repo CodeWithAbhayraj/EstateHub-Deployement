@@ -12,6 +12,7 @@ import {
   MapPin,
 } from "lucide-react";
 
+
 import { getPublishedProperties } from "../../api/propertyApi";
 import {
   addFavorite,
