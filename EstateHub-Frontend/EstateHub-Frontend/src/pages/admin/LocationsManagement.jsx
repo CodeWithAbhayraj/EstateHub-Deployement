@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import {
   MapPin,
@@ -9,6 +10,7 @@ import {
   CheckCircle,
   AlertCircle,
   ChevronRight,
+  ArrowUpRight,
 } from "lucide-react";
 
 import {
@@ -20,9 +22,9 @@ import {
   createPropertyType,
 } from "../../api/locationAdminApi";
 
-// ==========================================
-// MAIN COMPONENT
-// ==========================================
+const FRASER = {
+  fontFamily: "'Fraunces', Georgia, 'Times New Roman', serif",
+};
 
 function LocationsManagement() {
   const [cities, setCities] = useState([]);
@@ -72,7 +74,10 @@ function LocationsManagement() {
         return;
       }
 
-      const currentCityExists = cityList.some((city) => String(city.id) === String(selectedCityId));
+      const currentCityExists = cityList.some(
+        (city) => String(city.id) === String(selectedCityId)
+      );
+
       if (!currentCityExists) {
         setSelectedCityId(String(cityList[0].id));
       }
@@ -107,11 +112,17 @@ function LocationsManagement() {
 
       const data = await getAreasByCity(cityId);
       const areaList = Array.isArray(data) ? data : [];
+
       setAreas(areaList);
 
       if (areaList.length > 0) {
-        const existingArea = areaList.find((area) => String(area.id) === String(selectedAreaId));
-        if (!existingArea) setSelectedAreaId(String(areaList[0].id));
+        const existingArea = areaList.find(
+          (area) => String(area.id) === String(selectedAreaId)
+        );
+
+        if (!existingArea) {
+          setSelectedAreaId(String(areaList[0].id));
+        }
       } else {
         setSelectedAreaId("");
         setPropertyTypes([]);
@@ -150,7 +161,9 @@ function LocationsManagement() {
     } catch (err) {
       console.error("Property types error:", err);
       setPropertyTypes([]);
-      setError(err.response?.data?.message || "Failed to load property types.");
+      setError(
+        err.response?.data?.message || "Failed to load property types."
+      );
     } finally {
       setLoadingPropertyTypes(false);
     }
@@ -186,6 +199,7 @@ function LocationsManagement() {
 
   const handleCreateCity = async (event) => {
     event.preventDefault();
+
     const name = cityName.trim();
 
     if (!name) {
@@ -219,6 +233,7 @@ function LocationsManagement() {
 
   const handleCreateArea = async (event) => {
     event.preventDefault();
+
     const name = areaName.trim();
 
     if (!selectedCityId) {
@@ -258,6 +273,7 @@ function LocationsManagement() {
 
   const handleCreatePropertyType = async (event) => {
     event.preventDefault();
+
     const name = propertyTypeName.trim();
 
     if (!selectedAreaId) {
@@ -277,14 +293,20 @@ function LocationsManagement() {
       setError("");
       setSuccess("");
 
-      const newPropertyType = await createPropertyType(Number(selectedAreaId), { name });
+      const newPropertyType = await createPropertyType(
+        Number(selectedAreaId),
+        { name }
+      );
 
       setPropertyTypes((prev) => [...prev, newPropertyType]);
       setPropertyTypeName("");
       setSuccess("Property type created successfully.");
     } catch (err) {
       console.error("Create property type error:", err);
-      setError(err.response?.data?.message || "Failed to create property type.");
+      setError(
+        err.response?.data?.message ||
+          "Failed to create property type."
+      );
     } finally {
       setPropertyTypeLoading(false);
     }
@@ -296,21 +318,41 @@ function LocationsManagement() {
 
   const filteredCities = useMemo(() => {
     const value = searchCity.toLowerCase().trim();
-    return cities.filter((city) => String(city.name || "").toLowerCase().includes(value));
+
+    return cities.filter((city) =>
+      String(city.name || "")
+        .toLowerCase()
+        .includes(value)
+    );
   }, [cities, searchCity]);
 
   const filteredAreas = useMemo(() => {
     const value = searchArea.toLowerCase().trim();
-    return areas.filter((area) => String(area.name || "").toLowerCase().includes(value));
+
+    return areas.filter((area) =>
+      String(area.name || "")
+        .toLowerCase()
+        .includes(value)
+    );
   }, [areas, searchArea]);
 
   const filteredPropertyTypes = useMemo(() => {
     const value = searchPropertyType.toLowerCase().trim();
-    return propertyTypes.filter((type) => String(type.name || "").toLowerCase().includes(value));
+
+    return propertyTypes.filter((type) =>
+      String(type.name || "")
+        .toLowerCase()
+        .includes(value)
+    );
   }, [propertyTypes, searchPropertyType]);
 
-  const selectedCity = cities.find((city) => String(city.id) === String(selectedCityId));
-  const selectedArea = areas.find((area) => String(area.id) === String(selectedAreaId));
+  const selectedCity = cities.find(
+    (city) => String(city.id) === String(selectedCityId)
+  );
+
+  const selectedArea = areas.find(
+    (area) => String(area.id) === String(selectedAreaId)
+  );
 
   const cityCount = cities.length;
   const areaCount = areas.length;
@@ -318,77 +360,158 @@ function LocationsManagement() {
 
   return (
     <div className="w-full">
-      {/* HEADER */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Locations Management</h1>
-          <p className="mt-1 text-sm text-slate-500">Manage cities, areas and property types.</p>
-        </div>
+      {/* HERO */}
+      <section className="relative mb-6 overflow-hidden rounded-[28px] bg-[#171B21] px-5 py-6 text-white shadow-[0_24px_70px_rgba(23,27,33,0.14)] sm:px-7 sm:py-7">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.09]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.8) 1px, transparent 1px)",
+            backgroundSize: "34px 34px",
+          }}
+        />
 
-        <button
-          type="button"
-          onClick={() => fetchCities(false)}
-          disabled={loadingCities || refreshing}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
-        >
-          <RefreshCw size={15} className={refreshing ? "animate-spin" : ""} />
-          {refreshing ? "Refreshing..." : "Refresh"}
-        </button>
-      </div>
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <div className="mb-4 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8B876]">
+              <span className="h-px w-7 bg-[#D8B876]" />
+              EstateHub Admin
+            </div>
+
+            <h1
+              style={FRASER}
+              className="text-3xl leading-tight tracking-[-0.03em] sm:text-4xl"
+            >
+              Location architecture.
+            </h1>
+
+            <p className="mt-3 max-w-xl text-sm leading-6 text-white/65">
+              Build the location hierarchy behind your property marketplace —
+              city, area and property type.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => fetchCities(false)}
+            disabled={loadingCities || refreshing}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <RefreshCw
+              size={15}
+              className={refreshing ? "animate-spin" : ""}
+            />
+            {refreshing ? "Refreshing..." : "Refresh data"}
+          </button>
+        </div>
+      </section>
 
       {/* ALERTS */}
       {error && (
-        <div className="mb-4 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600" role="alert">
-          <AlertCircle size={16} className="mt-0.5 shrink-0" />
+        <div
+          className="mb-4 flex items-start gap-3 rounded-2xl border border-[#E6C6C0] bg-[#FFF7F5] p-4 text-sm text-[#A34C43]"
+          role="alert"
+        >
+          <AlertCircle size={17} className="mt-0.5 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="mb-4 flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700" role="status">
-          <CheckCircle size={16} className="mt-0.5 shrink-0" />
+        <div
+          className="mb-4 flex items-start gap-3 rounded-2xl border border-[#C9D8CD] bg-[#F4F8F5] p-4 text-sm text-[#3F6B52]"
+          role="status"
+        >
+          <CheckCircle size={17} className="mt-0.5 shrink-0" />
           <span>{success}</span>
         </div>
       )}
 
       {/* STATS */}
-      <div className="mb-6 grid grid-cols-3 gap-3">
-        <StatCard label="Cities" value={cityCount} icon={MapPin} iconClass="bg-blue-50 text-blue-600" />
-        <StatCard label="Areas" value={areaCount} icon={Building2} iconClass="bg-orange-50 text-orange-600" />
-        <StatCard label="Types" value={propertyTypeCount} icon={Layers3} iconClass="bg-violet-50 text-violet-600" />
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard
+          label="Cities"
+          value={cityCount}
+          icon={MapPin}
+          eyebrow="01"
+        />
+
+        <StatCard
+          label="Areas"
+          value={areaCount}
+          icon={Building2}
+          eyebrow="02"
+        />
+
+        <StatCard
+          label="Property types"
+          value={propertyTypeCount}
+          icon={Layers3}
+          eyebrow="03"
+        />
       </div>
 
       {/* CURRENT SELECTION */}
-      <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4">
-        <p className="text-xs font-medium text-slate-400">Current Selection</p>
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
-          <span className={selectedCity ? "font-semibold text-blue-600" : "font-medium text-slate-400"}>
-            {selectedCity?.name || "Select City"}
-          </span>
-          <ChevronRight size={14} className="text-slate-300" />
-          <span className={selectedArea ? "font-semibold text-orange-600" : "font-medium text-slate-400"}>
-            {selectedArea?.name || "Select Area"}
-          </span>
-          <ChevronRight size={14} className="text-slate-300" />
-          <span className="font-medium text-slate-400">Property Types</span>
+      <section className="mb-6 overflow-hidden rounded-2xl border border-[#D8CFB9] bg-[#FBF8F1]">
+        <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8A806D]">
+              Current selection
+            </p>
+
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+              <SelectionItem
+                active={Boolean(selectedCity)}
+                value={selectedCity?.name || "Select city"}
+              />
+
+              <ChevronRight size={14} className="text-[#B8AE9B]" />
+
+              <SelectionItem
+                active={Boolean(selectedArea)}
+                value={selectedArea?.name || "Select area"}
+              />
+
+              <ChevronRight size={14} className="text-[#B8AE9B]" />
+
+              <span className="font-medium text-[#8A806D]">
+                Property types
+              </span>
+            </div>
+          </div>
+
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-[#D8CFB9] text-[#8C6924]">
+            <ArrowUpRight size={16} />
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* MAIN GRID */}
       <div className="grid gap-4 xl:grid-cols-3">
         {/* CITIES */}
-        <LocationPanel title="Cities" subtitle={`${cityCount} ${cityCount === 1 ? "city" : "cities"}`} icon={MapPin} iconClass="bg-blue-50 text-blue-600">
+        <LocationPanel
+          title="Cities"
+          subtitle={`${cityCount} ${
+            cityCount === 1 ? "city" : "cities"
+          }`}
+          icon={MapPin}
+          index="01"
+        >
           <CreateForm
-            label="Add City"
+            label="Add city"
             value={cityName}
             onChange={setCityName}
             onSubmit={handleCreateCity}
             placeholder="e.g. Pune"
-            buttonClass="bg-blue-600 hover:bg-blue-700"
+            buttonClass="bg-[#201C15] hover:bg-[#312A20]"
             loading={cityLoading}
           />
 
-          <SearchInput value={searchCity} onChange={setSearchCity} placeholder="Search cities..." />
+          <SearchInput
+            value={searchCity}
+            onChange={setSearchCity}
+            placeholder="Search cities..."
+          />
 
           <div className="mt-3">
             {loadingCities ? (
@@ -398,19 +521,38 @@ function LocationsManagement() {
             ) : (
               <div className="max-h-96 space-y-2 overflow-y-auto pr-1">
                 {filteredCities.map((city) => {
-                  const active = String(city.id) === String(selectedCityId);
+                  const active =
+                    String(city.id) === String(selectedCityId);
+
                   return (
                     <button
                       key={city.id}
                       type="button"
                       onClick={() => handleSelectCity(city.id)}
-                      className={`w-full rounded-lg border px-3 py-2.5 text-left transition ${
-                        active ? "border-blue-300 bg-blue-50" : "border-slate-200 bg-white hover:bg-slate-50"
+                      className={`group w-full rounded-xl border px-3 py-3 text-left transition ${
+                        active
+                          ? "border-[#C7A45D] bg-[#F7F0DF]"
+                          : "border-[#E4DCC9] bg-[#FCFAF5] hover:border-[#CFC4AE] hover:bg-[#F8F5ED]"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <span className="truncate text-sm font-medium text-slate-800">{city.name}</span>
-                        <span className="shrink-0 text-xs text-slate-400">#{city.id}</span>
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span
+                            className={`h-2 w-2 shrink-0 rounded-full ${
+                              active
+                                ? "bg-[#AD8332]"
+                                : "bg-[#D8CFB9]"
+                            }`}
+                          />
+
+                          <span className="truncate text-sm font-semibold text-[#29251E]">
+                            {city.name}
+                          </span>
+                        </div>
+
+                        <span className="shrink-0 text-[10px] font-medium text-[#A49A87]">
+                          #{city.id}
+                        </span>
                       </div>
                     </button>
                   );
@@ -423,25 +565,35 @@ function LocationsManagement() {
         {/* AREAS */}
         <LocationPanel
           title="Areas"
-          subtitle={selectedCity ? `Inside ${selectedCity.name}` : "Select a city"}
+          subtitle={
+            selectedCity
+              ? `Inside ${selectedCity.name}`
+              : "Select a city"
+          }
           icon={Building2}
-          iconClass="bg-orange-50 text-orange-600"
+          index="02"
         >
           <CreateForm
-            label="Add Area"
+            label="Add area"
             value={areaName}
             onChange={setAreaName}
             onSubmit={handleCreateArea}
-            placeholder={selectedCityId ? "e.g. Baner" : "Select city first"}
+            placeholder={
+              selectedCityId ? "e.g. Baner" : "Select city first"
+            }
             disabled={!selectedCityId}
-            buttonClass="bg-orange-600 hover:bg-orange-700"
+            buttonClass="bg-[#8C6924] hover:bg-[#76581E]"
             loading={areaLoading}
           />
 
           <SearchInput
             value={searchArea}
             onChange={setSearchArea}
-            placeholder={selectedCityId ? "Search areas..." : "Select city first"}
+            placeholder={
+              selectedCityId
+                ? "Search areas..."
+                : "Select city first"
+            }
             disabled={!selectedCityId}
           />
 
@@ -455,19 +607,38 @@ function LocationsManagement() {
             ) : (
               <div className="max-h-96 space-y-2 overflow-y-auto pr-1">
                 {filteredAreas.map((area) => {
-                  const active = String(area.id) === String(selectedAreaId);
+                  const active =
+                    String(area.id) === String(selectedAreaId);
+
                   return (
                     <button
                       key={area.id}
                       type="button"
                       onClick={() => handleSelectArea(area.id)}
-                      className={`w-full rounded-lg border px-3 py-2.5 text-left transition ${
-                        active ? "border-orange-300 bg-orange-50" : "border-slate-200 bg-white hover:bg-slate-50"
+                      className={`group w-full rounded-xl border px-3 py-3 text-left transition ${
+                        active
+                          ? "border-[#C7A45D] bg-[#F7F0DF]"
+                          : "border-[#E4DCC9] bg-[#FCFAF5] hover:border-[#CFC4AE] hover:bg-[#F8F5ED]"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <span className="truncate text-sm font-medium text-slate-800">{area.name}</span>
-                        <span className="shrink-0 text-xs text-slate-400">#{area.id}</span>
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span
+                            className={`h-2 w-2 shrink-0 rounded-full ${
+                              active
+                                ? "bg-[#AD8332]"
+                                : "bg-[#D8CFB9]"
+                            }`}
+                          />
+
+                          <span className="truncate text-sm font-semibold text-[#29251E]">
+                            {area.name}
+                          </span>
+                        </div>
+
+                        <span className="shrink-0 text-[10px] font-medium text-[#A49A87]">
+                          #{area.id}
+                        </span>
                       </div>
                     </button>
                   );
@@ -479,26 +650,38 @@ function LocationsManagement() {
 
         {/* PROPERTY TYPES */}
         <LocationPanel
-          title="Property Types"
-          subtitle={selectedArea ? `Inside ${selectedArea.name}` : "Select an area"}
+          title="Property types"
+          subtitle={
+            selectedArea
+              ? `Inside ${selectedArea.name}`
+              : "Select an area"
+          }
           icon={Layers3}
-          iconClass="bg-violet-50 text-violet-600"
+          index="03"
         >
           <CreateForm
-            label="Add Property Type"
+            label="Add property type"
             value={propertyTypeName}
             onChange={setPropertyTypeName}
             onSubmit={handleCreatePropertyType}
-            placeholder={selectedAreaId ? "e.g. 2 BHK Flat" : "Select area first"}
+            placeholder={
+              selectedAreaId
+                ? "e.g. 2 BHK Flat"
+                : "Select area first"
+            }
             disabled={!selectedAreaId}
-            buttonClass="bg-violet-600 hover:bg-violet-700"
+            buttonClass="bg-[#3F6B52] hover:bg-[#315540]"
             loading={propertyTypeLoading}
           />
 
           <SearchInput
             value={searchPropertyType}
             onChange={setSearchPropertyType}
-            placeholder={selectedAreaId ? "Search property types..." : "Select area first"}
+            placeholder={
+              selectedAreaId
+                ? "Search property types..."
+                : "Select area first"
+            }
             disabled={!selectedAreaId}
           />
 
@@ -512,10 +695,22 @@ function LocationsManagement() {
             ) : (
               <div className="max-h-96 space-y-2 overflow-y-auto pr-1">
                 {filteredPropertyTypes.map((type) => (
-                  <div key={type.id} className="rounded-lg border border-slate-200 bg-white px-3 py-2.5">
+                  <div
+                    key={type.id}
+                    className="rounded-xl border border-[#E4DCC9] bg-[#FCFAF5] px-3 py-3 transition hover:border-[#CFC4AE]"
+                  >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="truncate text-sm font-medium text-slate-800">{type.name}</span>
-                      <span className="shrink-0 text-xs text-slate-400">#{type.id}</span>
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span className="h-2 w-2 shrink-0 rounded-full bg-[#AD8332]" />
+
+                        <span className="truncate text-sm font-semibold text-[#29251E]">
+                          {type.name}
+                        </span>
+                      </div>
+
+                      <span className="shrink-0 text-[10px] font-medium text-[#A49A87]">
+                        #{type.id}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -526,11 +721,19 @@ function LocationsManagement() {
       </div>
 
       {/* FOOTER INFO */}
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <section className="mt-6 overflow-hidden rounded-2xl bg-[#201C15] px-5 py-5 text-white sm:px-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-slate-800">City → Area → Property Type</p>
-            <p className="mt-0.5 text-xs text-slate-500">Property types are created inside the selected area.</p>
+            <p
+              style={FRASER}
+              className="text-lg text-white"
+            >
+              City → Area → Property Type
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-white/50">
+              Property types are created inside the selected area.
+            </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -539,7 +742,7 @@ function LocationsManagement() {
             <SummaryBadge label="Types" value={propertyTypeCount} />
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
@@ -548,20 +751,40 @@ function LocationsManagement() {
 // LOCATION PANEL
 // ==========================================
 
-function LocationPanel({ title, subtitle, icon: Icon, iconClass, children }) {
+function LocationPanel({
+  title,
+  subtitle,
+  icon: Icon,
+  index,
+  children,
+}) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4">
-      <div className="flex items-center gap-3">
-        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${iconClass}`}>
-          <Icon size={18} />
-        </div>
-        <div className="min-w-0">
-          <h2 className="truncate text-base font-bold text-slate-900">{title}</h2>
-          <p className="truncate text-xs text-slate-500">{subtitle}</p>
+    <section className="overflow-hidden rounded-[22px] border border-[#D8CFB9] bg-[#FBF8F1] shadow-[0_12px_35px_rgba(47,39,27,0.05)]">
+      <div className="border-b border-[#E4DCC9] px-4 py-4 sm:px-5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#201C15] text-[#D8B876]">
+              <Icon size={18} />
+            </div>
+
+            <div className="min-w-0">
+              <h2 className="truncate text-sm font-bold text-[#201C15]">
+                {title}
+              </h2>
+
+              <p className="truncate text-xs text-[#8A806D]">
+                {subtitle}
+              </p>
+            </div>
+          </div>
+
+          <span className="text-[10px] font-bold tracking-[0.15em] text-[#AD8332]">
+            {index}
+          </span>
         </div>
       </div>
 
-      <div className="mt-4">{children}</div>
+      <div className="p-4 sm:p-5">{children}</div>
     </section>
   );
 }
@@ -570,10 +793,21 @@ function LocationPanel({ title, subtitle, icon: Icon, iconClass, children }) {
 // CREATE FORM
 // ==========================================
 
-function CreateForm({ label, value, onChange, onSubmit, placeholder, disabled = false, loading = false, buttonClass }) {
+function CreateForm({
+  label,
+  value,
+  onChange,
+  onSubmit,
+  placeholder,
+  disabled = false,
+  loading = false,
+  buttonClass,
+}) {
   return (
     <form onSubmit={onSubmit} className="mb-3">
-      <label className="mb-1.5 block text-sm font-medium text-slate-700">{label}</label>
+      <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.12em] text-[#6B6252]">
+        {label}
+      </label>
 
       <div className="flex gap-2">
         <input
@@ -582,16 +816,23 @@ function CreateForm({ label, value, onChange, onSubmit, placeholder, disabled = 
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}
           disabled={disabled}
-          className="min-w-0 flex-1 rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-slate-400 disabled:bg-slate-100"
+          className="min-w-0 flex-1 rounded-xl border border-[#D8CFB9] bg-white px-3 py-2.5 text-sm text-[#29251E] outline-none placeholder:text-[#AAA18F] transition focus:border-[#AD8332] focus:ring-2 focus:ring-[#AD8332]/10 disabled:cursor-not-allowed disabled:bg-[#F0ECE2]"
         />
 
         <button
           type="submit"
           disabled={disabled || loading}
-          className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50 ${buttonClass}`}
+          className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-40 ${buttonClass}`}
         >
-          {loading ? <RefreshCw size={14} className="animate-spin" /> : <Plus size={14} />}
-          {loading ? "Adding..." : "Add"}
+          {loading ? (
+            <RefreshCw size={14} className="animate-spin" />
+          ) : (
+            <Plus size={14} />
+          )}
+
+          <span className="hidden sm:inline">
+            {loading ? "Adding..." : "Add"}
+          </span>
         </button>
       </div>
     </form>
@@ -602,17 +843,26 @@ function CreateForm({ label, value, onChange, onSubmit, placeholder, disabled = 
 // SEARCH INPUT
 // ==========================================
 
-function SearchInput({ value, onChange, placeholder, disabled = false }) {
+function SearchInput({
+  value,
+  onChange,
+  placeholder,
+  disabled = false,
+}) {
   return (
     <div className="relative">
-      <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+      <Search
+        size={15}
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9D9483]"
+      />
+
       <input
         type="text"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full rounded-lg border border-slate-200 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-slate-400 disabled:bg-slate-100"
+        className="w-full rounded-xl border border-[#D8CFB9] bg-white py-2.5 pl-9 pr-3 text-sm text-[#29251E] outline-none placeholder:text-[#AAA18F] transition focus:border-[#AD8332] focus:ring-2 focus:ring-[#AD8332]/10 disabled:cursor-not-allowed disabled:bg-[#F0ECE2]"
       />
     </div>
   );
@@ -622,19 +872,50 @@ function SearchInput({ value, onChange, placeholder, disabled = false }) {
 // STAT CARD
 // ==========================================
 
-function StatCard({ label, value, icon: Icon, iconClass }) {
+function StatCard({ label, value, icon: Icon, eyebrow }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <p className="truncate text-xs font-medium text-slate-500">{label}</p>
-          <p className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{value}</p>
+    <div className="group rounded-2xl border border-[#D8CFB9] bg-[#FBF8F1] p-4 transition hover:-translate-y-0.5 hover:shadow-[0_14px_35px_rgba(47,39,27,0.07)]">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <span className="text-[10px] font-bold tracking-[0.18em] text-[#AD8332]">
+            {eyebrow}
+          </span>
+
+          <p className="mt-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#8A806D]">
+            {label}
+          </p>
+
+          <p
+            style={FRASER}
+            className="mt-1 text-3xl tracking-[-0.03em] text-[#201C15]"
+          >
+            {value}
+          </p>
         </div>
-        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${iconClass}`}>
-          <Icon size={17} />
+
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#201C15] text-[#D8B876]">
+          <Icon size={18} />
         </div>
       </div>
     </div>
+  );
+}
+
+// ==========================================
+// SELECTION ITEM
+// ==========================================
+
+function SelectionItem({ active, value }) {
+  return (
+    <span
+      className={
+        active
+          ? "rounded-full bg-[#F2E6C9] px-3 py-1.5 font-bold text-[#8C6924]"
+          : "rounded-full border border-[#E4DCC9] px-3 py-1.5 font-medium text-[#A29A89]"
+      }
+    >
+      {value}
+    </span>
   );
 }
 
@@ -644,17 +925,20 @@ function StatCard({ label, value, icon: Icon, iconClass }) {
 
 function LoadingText({ text }) {
   return (
-    <div className="flex flex-col items-center justify-center py-8 text-center">
-      <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-slate-700" />
-      <p className="mt-2 text-xs text-slate-400">{text}</p>
+    <div className="flex flex-col items-center justify-center py-10 text-center">
+      <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#D8CFB9] border-t-[#AD8332]" />
+
+      <p className="mt-3 text-xs text-[#9A9180]">
+        {text}
+      </p>
     </div>
   );
 }
 
 function EmptyText({ text }) {
   return (
-    <div className="py-8 text-center">
-      <p className="text-sm text-slate-400">{text}</p>
+    <div className="rounded-xl border border-dashed border-[#D8CFB9] bg-[#F8F5ED] py-10 text-center">
+      <p className="text-sm text-[#9A9180]">{text}</p>
     </div>
   );
 }
@@ -665,11 +949,17 @@ function EmptyText({ text }) {
 
 function SummaryBadge({ label, value }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
-      <span className="text-xs text-slate-500">{label}</span>
-      <span className="text-sm font-semibold text-slate-900">{value}</span>
+    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-2">
+      <span className="text-[11px] text-white/50">
+        {label}
+      </span>
+
+      <span className="text-sm font-bold text-[#D8B876]">
+        {value}
+      </span>
     </div>
   );
 }
 
 export default LocationsManagement;
+
