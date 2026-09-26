@@ -1,3 +1,4 @@
+
 function Input({
   label,
   name,
@@ -13,9 +14,17 @@ function Input({
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-slate-700">
+        <label
+          htmlFor={name}
+          className="mb-2 block text-sm font-semibold text-[#403A31]"
+        >
           {label}
-          {required && <span className="ml-1 text-red-500">*</span>}
+
+          {required && (
+            <span className="ml-1 text-[#B3564B]" aria-hidden="true">
+              *
+            </span>
+          )}
         </label>
       )}
 
@@ -31,19 +40,43 @@ function Input({
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${name}-error` : undefined}
         className={`
-          min-h-11 w-full rounded-lg border bg-white px-3.5 py-2.5
-          text-sm text-slate-800 outline-none transition-colors duration-150
-          placeholder:text-slate-400
-          disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400
-          ${error
-            ? "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-            : "border-slate-200 hover:border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-100"}
+          min-h-11 w-full rounded-xl border
+          bg-[#FBF8F1] px-3.5 py-2.5
+          text-sm font-medium text-[#201C15]
+          outline-none
+          transition-all duration-200
+          placeholder:text-[#9A9180]
+          disabled:cursor-not-allowed
+          disabled:bg-[#EEE9DE]
+          disabled:text-[#9A9180]
+          disabled:opacity-80
+          ${
+            error
+              ? `
+                border-[#D79A91]
+                bg-[#FFF9F7]
+                focus:border-[#B3564B]
+                focus:ring-2
+                focus:ring-[#B3564B]/10
+              `
+              : `
+                border-[#D8CFB9]
+                hover:border-[#B9AA8D]
+                focus:border-[#AD8332]
+                focus:ring-2
+                focus:ring-[#AD8332]/10
+              `
+          }
           ${className}
         `}
       />
 
       {error && (
-        <p id={`${name}-error`} className="mt-1 text-xs text-red-600">
+        <p
+          id={`${name}-error`}
+          role="alert"
+          className="mt-1.5 text-xs font-medium text-[#B3564B]"
+        >
           {error}
         </p>
       )}
@@ -52,3 +85,4 @@ function Input({
 }
 
 export default Input;
+

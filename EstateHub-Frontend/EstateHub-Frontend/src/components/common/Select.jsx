@@ -1,3 +1,4 @@
+
 function Select({
   label,
   name,
@@ -12,9 +13,17 @@ function Select({
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-slate-700">
+        <label
+          htmlFor={name}
+          className="mb-2 block text-sm font-semibold text-[#403A31]"
+        >
           {label}
-          {required && <span className="ml-1 text-red-500">*</span>}
+
+          {required && (
+            <span className="ml-1 text-[#B3564B]" aria-hidden="true">
+              *
+            </span>
+          )}
         </label>
       )}
 
@@ -26,12 +35,21 @@ function Select({
         disabled={disabled}
         required={required}
         className={`
-          min-h-11 w-full rounded-lg border border-slate-200 bg-white
-          px-3.5 py-2.5 text-sm text-slate-800 outline-none
-          transition-colors duration-150
-          hover:border-slate-300
-          focus:border-brand-500 focus:ring-2 focus:ring-brand-100
-          disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400
+          min-h-11 w-full rounded-xl border
+          border-[#D8CFB9]
+          bg-[#FBF8F1]
+          px-3.5 py-2.5
+          text-sm font-medium text-[#201C15]
+          outline-none
+          transition-all duration-200
+          hover:border-[#B9AA8D]
+          focus:border-[#AD8332]
+          focus:ring-2
+          focus:ring-[#AD8332]/10
+          disabled:cursor-not-allowed
+          disabled:bg-[#EEE9DE]
+          disabled:text-[#9A9180]
+          disabled:opacity-80
           ${className}
         `}
       >

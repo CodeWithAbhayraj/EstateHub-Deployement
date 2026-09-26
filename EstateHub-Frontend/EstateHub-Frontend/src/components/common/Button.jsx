@@ -1,9 +1,19 @@
+
 const VARIANTS = {
-  primary: "bg-slate-900 text-white hover:bg-slate-800",
-  accent: "bg-brand-600 text-white hover:bg-brand-700",
-  outline: "border border-slate-300 text-slate-700 hover:bg-slate-50",
-  ghost: "text-slate-600 hover:bg-slate-100",
-  danger: "bg-red-600 text-white hover:bg-red-700",
+  primary:
+    "bg-[#201C15] text-[#F8F5ED] hover:bg-[#302A22] border border-[#201C15]",
+
+  accent:
+    "bg-[#AD8332] text-white hover:bg-[#8C6924] border border-[#AD8332]",
+
+  outline:
+    "border border-[#D8CFB9] bg-[#FBF8F1] text-[#403A31] hover:border-[#AD8332] hover:bg-[#F2ECDF]",
+
+  ghost:
+    "text-[#6B6252] hover:bg-[#F2ECDF] hover:text-[#201C15]",
+
+  danger:
+    "bg-[#B3564B] text-white hover:bg-[#963F36] border border-[#B3564B]",
 };
 
 function Button({
@@ -21,11 +31,16 @@ function Button({
       disabled={disabled}
       className={`
         inline-flex min-h-11 items-center justify-center gap-2
-        rounded-lg px-4 py-2.5 text-sm font-medium
-        transition-colors duration-150
+        rounded-xl px-4 py-2.5
+        text-sm font-semibold
+        transition-all duration-200
         disabled:cursor-not-allowed disabled:opacity-50
-        focus-visible:outline-none focus-visible:ring-2
-        focus-visible:ring-brand-500 focus-visible:ring-offset-2
+        focus-visible:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-[#AD8332]
+        focus-visible:ring-offset-2
+        focus-visible:ring-offset-[#F8F5ED]
+        active:scale-[0.98]
         ${VARIANTS[variant] || VARIANTS.primary}
         ${className}
       `}
@@ -36,3 +51,4 @@ function Button({
 }
 
 export default Button;
+
