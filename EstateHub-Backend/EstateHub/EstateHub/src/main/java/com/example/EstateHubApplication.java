@@ -9,5 +9,4 @@ public class EstateHubApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EstateHubApplication.class, args);
 	}
-
 }
